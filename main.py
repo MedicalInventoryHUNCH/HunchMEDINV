@@ -20,18 +20,15 @@ def idnumber():
         print(int(splitmeds[2]))
         intmeds = int(splitmeds[2])
         return intmeds
+    else:
+        print("unknown tag")
 
 while True:
 
     tag = clf.connect(rdwr={'on-connect': lambda tag: False})
     tag_data = tag.ndef.records
 
-    if idnumber() == 2:
+    collection.update_many({"_id":idnumber()}, {"$inc":{"Amount":-1}})
+    break
 
-        collection.update_many({"_id":11010111}, {"$inc":{"Amount":-1}})
-
-        break
-
-    else:
-        print("unknown tag1")
 
