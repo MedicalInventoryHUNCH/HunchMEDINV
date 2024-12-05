@@ -21,14 +21,32 @@ def idnumber():
         intmeds = int(splitmeds[2])
         return intmeds
     else:
-        print("unknown tag")
+        print("med unknown tag")
+
+def astroID():
+    if "ASTROID" in str(tag_data):
+        print("crew member" + str(tag_data))
+        astro = str(tag_data)
+        splitastro = astro.split('%')
+        print(str(splitastro[2]))
+    else:
+        print("astro unknown tag")
 
 while True:
 
     tag = clf.connect(rdwr={'on-connect': lambda tag: False})
     tag_data = tag.ndef.records
 
+    idnumber()
+
+    astroID()
+
     collection.update_many({"_id":idnumber()}, {"$inc":{"Amount":-1}})
+
+
+
+
+
     break
 
 
