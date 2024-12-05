@@ -1,0 +1,14 @@
+import customtkinter
+import pymongo
+from pymongo import MongoClient
+import nfc
+
+cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+
+customtkinter.set_appearance_mode("dark")
+customtkinter.set_default_color_theme("dark-blue")
+root = customtkinter.CTk()
+root.title('Inventory taking bleh bleh bleh')
+root.geometry("600x600")
+
+root.mainloop()
