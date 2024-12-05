@@ -1,7 +1,6 @@
 import customtkinter
 import pymongo
 from pymongo import MongoClient
-import nfc
 
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 
@@ -14,7 +13,14 @@ root.geometry("600x600")
 def BlowJamie():
     print("Jamie Blown")
 
-buttonstuff = customtkinter.CTkButton(root, text="Blow Jamie", command=BlowJamie)
-buttonstuff.pack(pady=80)
+buttonstuff = customtkinter.CTkButton(root,
+                                      text="Blow Jamie",
+                                      command=BlowJamie,
+                                      width=298,
+                                      height=100,
+                                      text_color="Black",
+                                      hover_color="White"
+                                      )
+buttonstuff.pack(pady=20)
 
 root.mainloop()
