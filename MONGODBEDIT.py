@@ -10,6 +10,6 @@ cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@clus
 db = cluster["Inventory"]
 collection = db["Inventory"]
 
-doc1 = {"_id":4, "Item":"Pepto-Bismol", "Amount":300}
+doc1 = {"_id":5, "Item":"Morphine", "Amount":56} #use this to put new docs into DB
 
 collection.insert_one(doc1)
