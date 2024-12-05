@@ -11,4 +11,10 @@ root = customtkinter.CTk()
 root.title('Inventory taking bleh bleh bleh')
 root.geometry("600x600")
 
+def BlowJamie():
+    print("Jamie Blown")
+
+buttonstuff = customtkinter.CTkButton(root, text="Blow Jamie", command=BlowJamie)
+buttonstuff.pack(pady=80)
+
 root.mainloop()
