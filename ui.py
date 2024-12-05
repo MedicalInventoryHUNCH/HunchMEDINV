@@ -24,3 +24,5 @@ buttonstuff = customtkinter.CTkButton(root,
 buttonstuff.pack(pady=20)
 
 root.mainloop()
+
+#TS SUCKS delete it
