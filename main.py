@@ -23,15 +23,6 @@ def idnumber():
     else:
         print("med unknown tag")
 
-def astroID():
-    if "ASTROID" in str(tag_data):
-        print("crew member" + str(tag_data))
-        astro = str(tag_data)
-        splitastro = astro.split('%')
-        print(str(splitastro[2]))
-    else:
-        print("astro unknown tag")
-
 while True:
 
     tag = clf.connect(rdwr={'on-connect': lambda tag: False})
@@ -39,14 +30,7 @@ while True:
 
     idnumber()
 
-    astroID()
-
     collection.update_many({"_id":idnumber()}, {"$inc":{"Amount":-1}})
-
-
-
-
-
     break
 
 
