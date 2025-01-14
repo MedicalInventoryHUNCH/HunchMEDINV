@@ -7,7 +7,7 @@ cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@clus
 db = cluster["Inventory"]
 collection = db["Inventory"]
 
-doc1 = {"_id":5, "Item":"Morphine", "Amount":56} #use this to put new docs into DB
+#doc1 = {"_id":5, "Item":"Morphine", "Amount":56} #use this to put new docs into DB
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -30,7 +30,6 @@ LogsButton = customtkinter.CTkButton(root,
                                      height=100,
                                      text_color="White",
                                      )
-LogsButton.grid(row=0, column=0)
 
 EditButton = customtkinter.CTkButton(root,
                                       text="Edit",
@@ -42,10 +41,9 @@ EditButton = customtkinter.CTkButton(root,
 
 
 
-EditButton.grid(row=1, column=0)
 
 
-EditButton.pack(pady=180)
-LogsButton.pack(pady=180)
+EditButton.grid(row=0, column=0, padx=20, pady=20)
+LogsButton.grid(row=1,column=0, padx=20, pady=20)
 
 root.mainloop()
