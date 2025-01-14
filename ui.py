@@ -8,21 +8,22 @@ customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 root = customtkinter.CTk()
 root.title('Inventory taking bleh bleh bleh')
-root.geometry("600x600")
+root.geometry("800x600")
 
-def BlowJamie():
-    print("Jamie Blown")
+def Edit():
+    print("work")
 
-buttonstuff = customtkinter.CTkButton(root,
-                                      text="Blow Jamie",
-                                      command=BlowJamie,
+EditButton = customtkinter.CTkButton(root,
+                                      text="Edit",
+                                      command=Edit(),
                                       width=298,
                                       height=100,
-                                      text_color="Black",
-                                      hover_color="White"
+                                      text_color="White",
                                       )
-buttonstuff.pack(pady=20)
+
+
+
+EditButton.grid(row=0, column=0)
+EditButton.pack(pady=180)
 
 root.mainloop()
-
-#TS SUCKS delete it
