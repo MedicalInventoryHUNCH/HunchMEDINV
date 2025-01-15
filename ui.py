@@ -15,13 +15,12 @@ root = customtkinter.CTk()
 root.title('Inventory taking bleh bleh bleh')
 root.geometry("800x600")
 
-def Edit():
-    print('whatever')
-    return
+
+
 
 def Logs():
     print('whatever2')
-    return
+
 
 LogsButton = customtkinter.CTkButton(root,
                                      text="Logs",
@@ -30,6 +29,9 @@ LogsButton = customtkinter.CTkButton(root,
                                      height=100,
                                      text_color="White",
                                      )
+
+def Edit():
+    print('whatever')
 
 EditButton = customtkinter.CTkButton(root,
                                       text="Edit",

@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="manual edit edited fn">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MONGODBEDIT.py" beforeDir="false" afterPath="$PROJECT_DIR$/MONGODBEDIT.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
