@@ -9,43 +9,41 @@ collection = db["Inventory"]
 
 #doc1 = {"_id":5, "Item":"Morphine", "Amount":56} #use this to put new docs into DB
 
-customtkinter.set_appearance_mode("dark")
-customtkinter.set_default_color_theme("dark-blue")
-root = customtkinter.CTk()
-root.title('Inventory taking bleh bleh bleh')
-root.geometry("800x600")
+class App(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
 
+        customtkinter.set_appearance_mode("dark")
+        customtkinter.set_default_color_theme("dark-blue")
+        self.title('Inventory taking bleh bleh bleh')
+        self.geometry("800x600")
+        #root.attributes ('-fullscreen', True) #not working
 
-
-
-def Logs():
-    print('whatever2')
-
-
-LogsButton = customtkinter.CTkButton(root,
+        self.LogsButton = customtkinter.CTkButton(self,
                                      text="Logs",
-                                     command=Logs(),
+                                     command=self.logs,
                                      width=300,
                                      height=100,
                                      text_color="White",
                                      )
+        self.LogsButton.grid(row=1, column=0, padx=20, pady=20)
 
-def Edit():
-    print('whatever')
-
-EditButton = customtkinter.CTkButton(root,
+        self.EditButton = customtkinter.CTkButton(self,
                                       text="Edit",
-                                      command=Edit(),
+                                      command=self.edit,
                                       width=300,
                                       height=100,
                                       text_color="White",
                                       )
+        self.EditButton.grid(row=0, column=0, padx=20, pady=20)
+
+    def edit(self):
+        print('whatever')
+
+    def logs(self):
+        print('whatever2')
 
 
 
-
-
-EditButton.grid(row=0, column=0, padx=20, pady=20)
-LogsButton.grid(row=1,column=0, padx=20, pady=20)
-
-root.mainloop()
+app = App()
+app.mainloop()
