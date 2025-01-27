@@ -1,7 +1,15 @@
 import face_recognition
+import cv2
+import time
+
+cap = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        exit(":(")
+
+    cv2.imwrite("pictures/video.jpg", frame)
+    time.sleep(0.5)
 
 
-image = face_recognition.load_image_file("image.jpg")
-face_locations = face_recognition.face_locations(image)
-
-print(face_locations)
