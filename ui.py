@@ -9,6 +9,15 @@ db = cluster["Inventory"]
 collection = db["Inventory"]
 item_names = [doc["Item"] for doc in collection.find()]
 
+class ToplevelWindow(customtkinter.CTkToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.geometry("400x300")
+
+        self.label = customtkinter.CTkLabel(self, text="ToplevelWindow")
+        self.label.pack(padx=20, pady=20)
+
+
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -20,6 +29,8 @@ class App(customtkinter.CTk):
         # Window title and size
         self.title("Medical Inventory")
         self.geometry("800x700")
+
+        self.toplevel_window = None
 
         # Title Label
         self.TitleLabel = customtkinter.CTkLabel(
@@ -83,6 +94,18 @@ class App(customtkinter.CTk):
 
         self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
 
+        self.ViewLogsButton = customtkinter.CTkButton(
+            self, text="View Logs", command=self.viewlogs, width=200
+        )
+        self.ViewLogsButton.grid(row=3,
+                                 column=0,
+                                 padx=20,
+                                 pady=20,
+                                 command=self.viewlogs()
+                                 )
+
+
+
     def addstuff(self):
         id = self.AddIdBox.get().strip()
         name = self.AddNameBox.get().strip()
@@ -136,6 +159,14 @@ class App(customtkinter.CTk):
         global item_names
         item_names = [doc["Item"] for doc in collection.find()]
         self.CurrentDocumentsDropdown.configure(values=item_names)
+
+    def viewlogs(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = ToplevelWindow(self)  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+
+
 
 app = App()
 app.mainloop()
