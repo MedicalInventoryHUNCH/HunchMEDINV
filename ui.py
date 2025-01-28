@@ -1,6 +1,7 @@
 import customtkinter
 import pymongo
 from pymongo import MongoClient
+from PIL import Image
 
 # Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -76,6 +77,11 @@ class App(customtkinter.CTk):
             self.EditFrame, text="Update Amount", command=self.update_amount, width=150
         )
         self.ChangeAmountButton.grid(row=3, column=1, padx=10, pady=10)
+
+        self.James = customtkinter.CTkImage(dark_image=Image.open("pictures/face7.jpg"), size=(1000,250))
+        self.PicOfJames = customtkinter.CTkLabel(self, image=self.James, text="")
+
+        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
 
     def addstuff(self):
         id = self.AddIdBox.get().strip()
