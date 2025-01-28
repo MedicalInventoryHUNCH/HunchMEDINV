@@ -51,6 +51,7 @@ def capture_and_compare(cap, known_faces):
 def editdb():
     pass
 
+#RHYS IS STUPID
 
 
 def main():
