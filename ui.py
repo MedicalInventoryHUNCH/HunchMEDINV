@@ -2,8 +2,8 @@ import customtkinter
 import pymongo
 from pymongo import MongoClient
 
+# Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-
 db = cluster["Inventory"]
 collection = db["Inventory"]
 item_names = [doc["Item"] for doc in collection.find()]
@@ -12,94 +12,117 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
+        # Set appearance
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
-        self.title('Inventory taking')
+
+        # Window title and size
+        self.title("Medical Inventory")
         self.geometry("800x600")
-        #root.attributes ('-fullscreen', True) #not working
 
-        self.TitleLabel = customtkinter.CTkLabel(self,
-                                            text="Medical Inventory",
-                                            text_color="White",
-                                            font=("Arial", 20)
+        # Title Label
+        self.TitleLabel = customtkinter.CTkLabel(
+            self, text="Medical Inventory System", text_color="White", font=("Arial", 24, "bold")
+        )
+        self.TitleLabel.grid(row=0, column=0, columnspan=3, pady=20)
 
+        # Add Item Section
+        self.AddItemFrame = customtkinter.CTkFrame(self, corner_radius=10)
+        self.AddItemFrame.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
 
+        self.AddItemLabel = customtkinter.CTkLabel(self.AddItemFrame, text="Add New Item", font=("Arial", 18))
+        self.AddItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
-                                            )
-        self.TitleLabel.grid(row=1, column=2)
+        self.AddIdBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter ID")
+        self.AddIdBox.grid(row=1, column=0, padx=10, pady=5)
 
+        self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name")
+        self.AddNameBox.grid(row=1, column=1, padx=10, pady=5)
 
-        self.LogsButton = customtkinter.CTkButton(self,
-                                     text="Logs",
-                                     command=self.logs,
-                                     width=300,
-                                     height=100,
-                                     text_color="White",
-                                     )
-        self.LogsButton.grid(row=2, column=3, padx=20, pady=20)
+        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount")
+        self.AddAmountBox.grid(row=2, column=0, padx=10, pady=5)
 
-        self.EditButton = customtkinter.CTkButton(self,
-                                      text="Edit",
-                                      command=self.edit,
-                                      width=300,
-                                      height=100,
-                                      text_color="White",
-                                      )
-        self.EditButton.grid(row=2, column=1, padx=20, pady=20)
+        self.AddButton = customtkinter.CTkButton(
+            self.AddItemFrame, text="Add Item", command=self.addstuff, width=150
+        )
+        self.AddButton.grid(row=2, column=1, padx=10, pady=10)
 
-        self.AddIdBox = customtkinter.CTkTextbox(master=self,
-                                                 width=100,
-                                                 height=100,
-                                                 corner_radius=0)
-        self.AddIdBox.grid(row=3, column=2)
-        self.AddIdBox.insert("0.0", "Put id you want here" * 1)
+        # Dropdown and Edit Section
+        self.EditFrame = customtkinter.CTkFrame(self, corner_radius=10)
+        self.EditFrame.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
 
-        self.AddNameBox = customtkinter.CTkTextbox(master=self,
-                                                    width=100,
-                                                    height=100,
-                                                    corner_radius=0)
-        self.AddNameBox.grid(row=3, column=3)
-        self.AddNameBox.insert("0.0", "Put name you want here" * 1)
+        self.EditItemLabel = customtkinter.CTkLabel(self.EditFrame, text="Edit Existing Item", font=("Arial", 18))
+        self.EditItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
-        self.AddAmountBox = customtkinter.CTkTextbox(master=self,
-                                                    width=100,
-                                                    height=100,
-                                                    corner_radius=0)
-        self.AddAmountBox.grid(row=3, column=4)
-        self.AddAmountBox.insert("0.0", "Put amount you want here" * 1)
+        self.CurrentDocumentsDropdown = customtkinter.CTkOptionMenu(
+            self.EditFrame, values=item_names, width=200
+        )
+        self.CurrentDocumentsDropdown.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-        self.AddButton = customtkinter.CTkButton(self,
-                                                 text="Add",
-                                                 command=self.addstuff,
-                                                 width=100,
-                                                 height=100,
-                                                 text_color="White"
-                                                 )
-        self.AddButton.grid(row=3, column=5)
+        self.EditSelectedDropdown = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name")
+        self.EditSelectedDropdown.grid(row=2, column=0, padx=10, pady=5)
 
-        self.CurrentDocumentsDropdown = customtkinter.CTkOptionMenu(self,
-                                                                    values=item_names,
-                                                                    width=200,
-                                                                    height=30
-                                                                    )
-        self.CurrentDocumentsDropdown.grid(row=4, column=2, padx=20, pady=20)
+        self.DropDownEditButton = customtkinter.CTkButton(
+            self.EditFrame, text="Update Name", command=self.update_name, width=150
+        )
+        self.DropDownEditButton.grid(row=2, column=1, padx=10, pady=10)
+
+        # Logs and Additional Options Section
+        self.OptionsFrame = customtkinter.CTkFrame(self, corner_radius=10)
+        self.OptionsFrame.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="nsew")
+
+        self.LogsButton = customtkinter.CTkButton(
+            self.OptionsFrame, text="View Logs", command=self.logs, width=150
+        )
+        self.LogsButton.grid(row=0, column=0, padx=10, pady=10)
+
+        self.EditButton = customtkinter.CTkButton(
+            self.OptionsFrame, text="Edit Options", command=self.edit, width=150
+        )
+        self.EditButton.grid(row=0, column=1, padx=10, pady=10)
 
     def edit(self):
-        print('whatever')
+        print("whatever")
 
     def logs(self):
-        print('whatever2')
+        print("whatever2")
 
     def addstuff(self):
-        id = self.AddIdBox.get("1.0", "end").strip()
-        name = self.AddNameBox.get("1.0", "end").strip()
-        amount = self.AddAmountBox.get("1.0", "end").strip()
+        id = self.AddIdBox.get().strip()
+        name = self.AddNameBox.get().strip()
+        amount = self.AddAmountBox.get().strip()
 
-        doc1 = {"_id": int(id), "Item": name,
-                "Amount": int(amount)}  # use this to put new docs into DB
-        collection.insert_one(doc1)
+        if id and name and amount:
+            try:
+                doc1 = {"_id": int(id), "Item": name, "Amount": int(amount)}
+                collection.insert_one(doc1)
+                print("did it")
+            except Exception as e:
+                print(f"Error adding item: {e}")
+        else:
+            print("Put Everythin in")
 
+    def update_name(self):
+        selected_item = self.CurrentDocumentsDropdown.get()
+        new_name = self.EditSelectedDropdown.get().strip()
 
+        if selected_item and new_name:
+            try:
+                result = collection.update_one({"Item": selected_item}, {"$set": {"Item": new_name}})
+                if result.modified_count > 0:
+                    print(f"Updated '{selected_item}' to '{new_name}'")
+                    self.refresh_dropdown()
+                else:
+                    print("No item was updated.")
+            except Exception as e:
+                print(f"Error updating item: {e}")
+        else:
+            print("Please select an item and enter a new name.")
+
+    def refresh_dropdown(self):
+        global item_names
+        item_names = [doc["Item"] for doc in collection.find()]
+        self.CurrentDocumentsDropdown.configure(values=item_names)
 
 app = App()
 app.mainloop()

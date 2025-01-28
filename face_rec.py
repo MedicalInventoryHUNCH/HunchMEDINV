@@ -53,6 +53,7 @@ true_stuff = [index for index, value in enumerate(results) if bool(value)]
 
 print(true_stuff)
 
+#RHYS IS STUPID
 
 
 
