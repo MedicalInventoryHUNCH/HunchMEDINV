@@ -18,7 +18,7 @@ class App(customtkinter.CTk):
 
         # Window title and size
         self.title("Medical Inventory")
-        self.geometry("800x600")
+        self.geometry("800x700")
 
         # Title Label
         self.TitleLabel = customtkinter.CTkLabel(
@@ -47,9 +47,9 @@ class App(customtkinter.CTk):
         )
         self.AddButton.grid(row=2, column=1, padx=10, pady=10)
 
-        # Dropdown and Edit Section
+        # Edit Section
         self.EditFrame = customtkinter.CTkFrame(self, corner_radius=10)
-        self.EditFrame.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
+        self.EditFrame.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
 
         self.EditItemLabel = customtkinter.CTkLabel(self.EditFrame, text="Edit Existing Item", font=("Arial", 18))
         self.EditItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
@@ -59,33 +59,23 @@ class App(customtkinter.CTk):
         )
         self.CurrentDocumentsDropdown.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-        self.EditSelectedDropdown = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name")
-        self.EditSelectedDropdown.grid(row=2, column=0, padx=10, pady=5)
+        # Change Name
+        self.EditSelectedName = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name")
+        self.EditSelectedName.grid(row=2, column=0, padx=10, pady=5)
 
-        self.DropDownEditButton = customtkinter.CTkButton(
+        self.ChangeNameButton = customtkinter.CTkButton(
             self.EditFrame, text="Update Name", command=self.update_name, width=150
         )
-        self.DropDownEditButton.grid(row=2, column=1, padx=10, pady=10)
+        self.ChangeNameButton.grid(row=2, column=1, padx=10, pady=10)
 
-        # Logs and Additional Options Section
-        self.OptionsFrame = customtkinter.CTkFrame(self, corner_radius=10)
-        self.OptionsFrame.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="nsew")
+        # Change Amount
+        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount")
+        self.EditSelectedAmount.grid(row=3, column=0, padx=10, pady=5)
 
-        self.LogsButton = customtkinter.CTkButton(
-            self.OptionsFrame, text="View Logs", command=self.logs, width=150
+        self.ChangeAmountButton = customtkinter.CTkButton(
+            self.EditFrame, text="Update Amount", command=self.update_amount, width=150
         )
-        self.LogsButton.grid(row=0, column=0, padx=10, pady=10)
-
-        self.EditButton = customtkinter.CTkButton(
-            self.OptionsFrame, text="Edit Options", command=self.edit, width=150
-        )
-        self.EditButton.grid(row=0, column=1, padx=10, pady=10)
-
-    def edit(self):
-        print("whatever")
-
-    def logs(self):
-        print("whatever2")
+        self.ChangeAmountButton.grid(row=3, column=1, padx=10, pady=10)
 
     def addstuff(self):
         id = self.AddIdBox.get().strip()
@@ -96,15 +86,16 @@ class App(customtkinter.CTk):
             try:
                 doc1 = {"_id": int(id), "Item": name, "Amount": int(amount)}
                 collection.insert_one(doc1)
-                print("did it")
+                print("Item added successfully!")
+                self.refresh_dropdown()
             except Exception as e:
                 print(f"Error adding item: {e}")
         else:
-            print("Put Everythin in")
+            print("Please fill all fields.")
 
     def update_name(self):
         selected_item = self.CurrentDocumentsDropdown.get()
-        new_name = self.EditSelectedDropdown.get().strip()
+        new_name = self.EditSelectedName.get().strip()
 
         if selected_item and new_name:
             try:
@@ -118,6 +109,22 @@ class App(customtkinter.CTk):
                 print(f"Error updating item: {e}")
         else:
             print("Please select an item and enter a new name.")
+
+    def update_amount(self):
+        selected_item = self.CurrentDocumentsDropdown.get()
+        new_amount = self.EditSelectedAmount.get().strip()
+
+        if selected_item and new_amount:
+            try:
+                result = collection.update_one({"Item": selected_item}, {"$set": {"Amount": int(new_amount)}})
+                if result.modified_count > 0:
+                    print(f"Updated Amount for '{selected_item}' to '{new_amount}'")
+                else:
+                    print("No item was updated.")
+            except Exception as e:
+                print(f"Error updating Amount: {e}")
+        else:
+            print("Please select an item and enter a new amount.")
 
     def refresh_dropdown(self):
         global item_names
