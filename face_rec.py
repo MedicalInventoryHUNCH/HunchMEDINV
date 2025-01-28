@@ -7,53 +7,75 @@ from ndef import TextRecord
 import pymongo
 from pymongo import MongoClient
 
-cap = cv2.VideoCapture(0)
-
-imgencode = imgencode2 = imgencode3 = imgencode4 = imgencode5 = imgencode6 = imgencode7 = None
-
-img2 = face_recognition.load_image_file("pictures/face2.jpg")
-img3 = face_recognition.load_image_file("pictures/face3.jpg")
-img4 = face_recognition.load_image_file("pictures/face4.jpg")
-img5 = face_recognition.load_image_file("pictures/face5.jpg")
-img6 = face_recognition.load_image_file("pictures/face6.jpg")
-img7 = face_recognition.load_image_file("pictures/face7.jpg")
 
 
-while True:
+def load_known_faces():
+    known_faces = []
+    try:
+        # Load all reference faces
+        for i in range(2, 8):
+            img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
+            encoding = face_recognition.face_encodings(img)[0]
+            known_faces.append(encoding)
+        return known_faces
+    except FileNotFoundError:
+        print("Error: One or more face images not found in 'pictures' directory")
+        exit(1)
+    except IndexError:
+        print("Error: No face detected in one or more reference images")
+        exit(1)
+
+
+def capture_and_compare(cap, known_faces):
+    """Capture a frame and compare with known faces"""
     ret, frame = cap.read()
     if not ret:
-        exit(":(")
+        print("Error: Cannot read from webcam")
+        return None
 
     try:
-        imgencode = face_recognition.face_encodings(frame)[0]
+        # Get encoding of face in current frame
+        current_face_encoding = face_recognition.face_encodings(frame)[0]
 
-        imgencode2 = face_recognition.face_encodings(img2)[0]
+        # Compare with known faces
+        results = face_recognition.compare_faces(known_faces, current_face_encoding)
 
-        imgencode3 = face_recognition.face_encodings(img3)[0]
+        # Get indices of matching faces
+        matches = [index for index, value in enumerate(results) if bool(value)]
+        return matches
 
-        imgencode4 = face_recognition.face_encodings(img4)[0]
-
-        imgencode5 = face_recognition.face_encodings(img5)[0]
-
-        imgencode6 = face_recognition.face_encodings(img6)[0]
-
-        imgencode7 = face_recognition.face_encodings(img7)[0]
     except IndexError:
-        exit("No face detected.")
+        print("No face detected in camera frame")
+        return None
 
-    known_faces = [
-        imgencode2, imgencode3, imgencode4, imgencode5, imgencode6, imgencode7
-    ]
-    results = face_recognition.compare_faces(known_faces, imgencode)
-    break
-
-print(results)
-
-true_stuff = [index for index, value in enumerate(results) if bool(value)]
-
-print(true_stuff)
+def editdb():
+    pass
 
 #RHYS IS STUPID
 
 
+def main():
+    # Initialize webcam
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Cannot open webcam")
+        return
 
+    try:
+        # Load known faces
+        known_faces = load_known_faces()
+
+        # Capture and process one frame
+        matches = capture_and_compare(cap, known_faces)
+
+        if matches is not None:
+            print(f"Face matches with indices: {matches}")
+
+    finally:
+        # Clean up
+        cap.release()
+        cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()
