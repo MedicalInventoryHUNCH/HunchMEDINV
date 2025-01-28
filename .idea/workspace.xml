@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="added the entirety of facial recognition based on provided images as reference">
+    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="I forgot">
+      <change afterPath="$PROJECT_DIR$/Chat GPT testing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/qodana.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face_rec.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_rec.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pictures/image.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pictures/video.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,24 +48,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Python.MONGODBEDIT.executor&quot;: &quot;Run&quot;,
-    &quot;Python.face_rec.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mistake.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.type.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ui.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/hunch/PycharmProjects/HunchPythonNFCREAL&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Python.Chat GPT testing.executor": "Run",
+    "Python.MONGODBEDIT.executor": "Run",
+    "Python.face_rec.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.mistake.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.type.executor": "Run",
+    "Python.ui.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/hunch/PycharmProjects/HunchPythonNFCREAL",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -168,16 +171,43 @@
       <option name="project" value="LOCAL" />
       <updated>1737988509615</updated>
     </task>
-    <task id="LOCAL-00011" summary="added the entirety of facial recognition based on provided images as reference">
+    <task id="LOCAL-00011" summary="added manual edit&#10;added dropdown (WIP)">
       <option name="closed" value="true" />
-      <created>1737998263621</created>
+      <created>1738073750396</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1737998263621</updated>
+      <updated>1738073750396</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="made everything look nice">
+      <option name="closed" value="true" />
+      <created>1738077378460</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1738077378460</updated>
+    </task>
+    <task id="LOCAL-00013" summary="I forgot">
+      <option name="closed" value="true" />
+      <created>1738078418585</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1738078418585</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="mongodb edit file" />
@@ -186,7 +216,9 @@
     <MESSAGE value="manual edit edited fn" />
     <MESSAGE value="added button to ui" />
     <MESSAGE value="added face recognition file" />
-    <MESSAGE value="added the entirety of facial recognition based on provided images as reference" />
-    <option name="LAST_COMMIT_MESSAGE" value="added the entirety of facial recognition based on provided images as reference" />
+    <MESSAGE value="added manual edit&#10;added dropdown (WIP)" />
+    <MESSAGE value="made everything look nice" />
+    <MESSAGE value="I forgot" />
+    <option name="LAST_COMMIT_MESSAGE" value="I forgot" />
   </component>
 </project>
