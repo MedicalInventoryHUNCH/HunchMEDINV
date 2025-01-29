@@ -2,6 +2,8 @@ import customtkinter
 import pymongo
 from pymongo import MongoClient
 from PIL import Image
+import threading
+
 
 # Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -14,7 +16,7 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         super().__init__(*args, **kwargs)
         self.geometry("400x300")
 
-        self.label = customtkinter.CTkLabel(self, text="ToplevelWindow")
+        self.label = customtkinter.CTkLabel(self, text="")
         self.label.pack(padx=20, pady=20)
 
 
@@ -25,7 +27,6 @@ class App(customtkinter.CTk):
         # Set appearance
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
-
         # Window title and size
         self.title("Medical Inventory")
         self.geometry("800x700")
@@ -37,6 +38,8 @@ class App(customtkinter.CTk):
             self, text="Medical Inventory System", text_color="White", font=("Arial", 24, "bold")
         )
         self.TitleLabel.grid(row=0, column=0, columnspan=3, pady=20)
+
+
 
         # Add Item Section
         self.AddItemFrame = customtkinter.CTkFrame(self, corner_radius=10)
@@ -89,21 +92,17 @@ class App(customtkinter.CTk):
         )
         self.ChangeAmountButton.grid(row=3, column=1, padx=10, pady=10)
 
-        self.James = customtkinter.CTkImage(dark_image=Image.open("pictures/face7.jpg"), size=(1000,250))
-        self.PicOfJames = customtkinter.CTkLabel(self, image=self.James, text="")
+        #self.James = customtkinter.CTkImage(dark_image=Image.open("pictures/face7.jpg"), size=(1000,250))
+        #self.PicOfJames = customtkinter.CTkLabel(self, image=self.James, text="")
 
-        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
+        #self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
 
         self.ViewLogsButton = customtkinter.CTkButton(
-            self, text="View Logs", command=self.viewlogs, width=200
+            self, text="Logs Placeholder", command=self.viewlogs, width=200
         )
-        self.ViewLogsButton.grid(row=3,
-                                 column=0,
-                                 padx=20,
-                                 pady=20,
-                                 command=self.viewlogs()
-                                 )
+        self.ViewLogsButton.grid(row=3, column=0, padx=20, pady=20,)
 
+        self.start_monitoring_changes()
 
 
     def addstuff(self):
@@ -166,6 +165,37 @@ class App(customtkinter.CTk):
         else:
             self.toplevel_window.focus()  # if window exists focus it
 
+    def monitor_changes(self):
+
+        change_pipeline = [{"$match": {"operationType": "update"}}]
+
+        try:
+            # Use the pipeline and enable full document lookup
+            with collection.watch(pipeline=change_pipeline, full_document="updateLookup") as stream:
+                for change in stream:
+                    # Extract document information
+                    updated_id = change["documentKey"].get("_id")  # Extract _id
+                    updated_fields = change["updateDescription"]["updatedFields"]  # Fields that changed
+                    new_amount = updated_fields.get("Amount")  # New amount from update description
+
+                    # Extract the full document for the new name and other fields
+                    new_name = change["fullDocument"].get("Item")  # New name
+                    full_new_amount = change["fullDocument"].get("Amount")  # Double-check new amount
+
+                    # Since older values aren't in fullDocument, we extract the old value
+                    previous_amount = change["fullDocument"].get("Amount", new_amount)
+
+                    # Print the ID, Name, Amount (previous and new)
+                    print(
+                        f"ID: {updated_id}, Name: {new_name}, Previous Amount: {previous_amount}, New Amount: {new_amount}")
+
+        except Exception as e:
+            print(f"Error in change stream: {e}")
+
+    def start_monitoring_changes(self):
+        # Use a thread to avoid freezing the UI
+        monitor_thread = threading.Thread(target=self.monitor_changes, daemon=True)
+        monitor_thread.start()
 
 
 app = App()
