@@ -1,12 +1,22 @@
 import customtkinter
 import pymongo
 from pymongo import MongoClient
+from PIL import Image
 
 # Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = cluster["Inventory"]
 collection = db["Inventory"]
 item_names = [doc["Item"] for doc in collection.find()]
+
+class ToplevelWindow(customtkinter.CTkToplevel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.geometry("400x300")
+
+        self.label = customtkinter.CTkLabel(self, text="ToplevelWindow")
+        self.label.pack(padx=20, pady=20)
+
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -19,6 +29,8 @@ class App(customtkinter.CTk):
         # Window title and size
         self.title("Medical Inventory")
         self.geometry("800x700")
+
+        self.toplevel_window = None
 
         # Title Label
         self.TitleLabel = customtkinter.CTkLabel(
@@ -77,6 +89,23 @@ class App(customtkinter.CTk):
         )
         self.ChangeAmountButton.grid(row=3, column=1, padx=10, pady=10)
 
+        self.James = customtkinter.CTkImage(dark_image=Image.open("pictures/face7.jpg"), size=(1000,250))
+        self.PicOfJames = customtkinter.CTkLabel(self, image=self.James, text="")
+
+        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
+
+        self.ViewLogsButton = customtkinter.CTkButton(
+            self, text="View Logs", command=self.viewlogs, width=200
+        )
+        self.ViewLogsButton.grid(row=3,
+                                 column=0,
+                                 padx=20,
+                                 pady=20,
+                                 command=self.viewlogs()
+                                 )
+
+
+
     def addstuff(self):
         id = self.AddIdBox.get().strip()
         name = self.AddNameBox.get().strip()
@@ -130,6 +159,14 @@ class App(customtkinter.CTk):
         global item_names
         item_names = [doc["Item"] for doc in collection.find()]
         self.CurrentDocumentsDropdown.configure(values=item_names)
+
+    def viewlogs(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = ToplevelWindow(self)  # create window if its None or destroyed
+        else:
+            self.toplevel_window.focus()  # if window exists focus it
+
+
 
 app = App()
 app.mainloop()
