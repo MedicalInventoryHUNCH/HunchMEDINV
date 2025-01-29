@@ -3,11 +3,16 @@ import cv2
 import time
 import ndef
 import nfc
-from ndef import TextRecord
-import pymongo
 from pymongo import MongoClient
+import os
 
 
+mongo_uri = os.getenv("MONGO_URI")  # Fetch the URI from the environment variables
+cluster = MongoClient(mongo_uri)
+db = cluster["Inventory"]
+collection = db["astro"]
+
+clf = nfc.ContactlessFrontend('usb')
 
 def load_known_faces():
     known_faces = []
@@ -48,11 +53,36 @@ def capture_and_compare(cap, known_faces):
         print("No face detected in camera frame")
         return None
 
-def editdb():
-    pass
+def idnumber(tag_data):
+    if "NFCNASAMED" in str(tag_data):
+        print("scanned" + str(tag_data))
+        meds = str(tag_data)
+        splitmeds = meds.split('%')
+        print(int(splitmeds[2]))
+        intmeds = int(splitmeds[2])
+        return intmeds
 
-#RHYS IS STUPID
+    else:
+        print("med unknown tag")
 
+def nfc_read():
+    id_num = idnumber()
+    if id_num is None:
+        print("nettspend hate is forced")
+        return
+
+    else:
+        tag = clf.connect(rdwr={'on-connect': lambda tag: False})
+        tag_data = ndef.record if tag.ndef else None
+
+
+        collection.update_many({"_id": id_num}, {"$inc": {"Amount": -1}})
+        time.sleep(2)
+
+        print("ready")
+        if tag_data is None:
+            print("no tag data")
+            return
 
 def main():
     # Initialize webcam
@@ -75,6 +105,7 @@ def main():
         # Clean up
         cap.release()
         cv2.destroyAllWindows()
+
 
 
 if __name__ == "__main__":

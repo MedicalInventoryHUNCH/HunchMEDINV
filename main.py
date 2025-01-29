@@ -16,6 +16,7 @@ def idnumber():
     if "NFCNASAMED" in str(tag_data):
         print("scanned" + str(tag_data))
         meds = str(tag_data)
+
         splitmeds = meds.split('%')
         print(int(splitmeds[2]))
 
