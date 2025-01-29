@@ -11,14 +11,14 @@ mongo_uri = os.getenv("MONGO_URI")  # Fetch the URI from the environment variabl
 cluster = MongoClient(mongo_uri)
 db = cluster["Inventory"]
 collection = db["astro"]
-
+collection1 = db["Inventory"]
 clf = nfc.ContactlessFrontend('usb')
 
 def load_known_faces():
     known_faces = []
     try:
         # Load all reference faces
-        for i in range(2, 8):
+        for i in range(2, 9):
             img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
             encoding = face_recognition.face_encodings(img)[0]
             known_faces.append(encoding)
@@ -66,45 +66,48 @@ def idnumber(tag_data):
         print("med unknown tag")
 
 def nfc_read():
-    id_num = idnumber()
-    if id_num is None:
-        print("nettspend hate is forced")
-        return
 
-    else:
-        tag = clf.connect(rdwr={'on-connect': lambda tag: False})
-        tag_data = ndef.record if tag.ndef else None
+    tag1 = clf.connect(rdwr={'on-connect': lambda tag: False})
+    tag_data = ndef.record if tag1.ndef else None
 
 
+    id_num = idnumber(tag_data)
+    if id_num is not None:
         collection.update_many({"_id": id_num}, {"$inc": {"Amount": -1}})
         time.sleep(2)
 
-        print("ready")
-        if tag_data is None:
-            print("no tag data")
-            return
+    print("ready")
+    if id_num is None:
+        print("no tag data")
+        return
 
 def main():
     # Initialize webcam
     cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("Error: Cannot open webcam")
-        return
-
     try:
-        # Load known faces
         known_faces = load_known_faces()
 
-        # Capture and process one frame
-        matches = capture_and_compare(cap, known_faces)
+    except Exception as e:
+        print(f"Error: {e}")
+        return
 
-        if matches is not None:
-            print(f"Face matches with indices: {matches}")
+    while True:
+        if not cap.isOpened():
+            print("Error: Cannot open webcam")
+            return
 
-    finally:
-        # Clean up
-        cap.release()
-        cv2.destroyAllWindows()
+        try:
+            # Load known faces
+            # Capture and process one frame
+            matches = capture_and_compare(cap, known_faces)
+
+            if matches is not None:
+                print(f"Face matches with indices: {matches}")
+                nfc_read()
+        except KeyboardInterrupt:
+            # Clean up
+            cap.release()
+            cv2.destroyAllWindows()
 
 
 
