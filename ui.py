@@ -92,10 +92,10 @@ class App(customtkinter.CTk):
         )
         self.ChangeAmountButton.grid(row=3, column=1, padx=10, pady=10)
 
-        #self.James = customtkinter.CTkImage(dark_image=Image.open("pictures/face7.jpg"), size=(1000,250))
-        #self.PicOfJames = customtkinter.CTkLabel(self, image=self.James, text="")
+        self.James = customtkinter.CTkImage(dark_image=Image.open("pictures/face7.jpg"), size=(1000,250))
+        self.PicOfJames = customtkinter.CTkLabel(self, image=self.James, text="")
 
-        #self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
+        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10)
 
         self.ViewLogsButton = customtkinter.CTkButton(
             self, text="Logs Placeholder", command=self.viewlogs, width=200
@@ -104,6 +104,10 @@ class App(customtkinter.CTk):
 
         self.start_monitoring_changes()
 
+        self.DeleteButton = customtkinter.CTkButton(
+            self.EditFrame, text="Delete Item", command=self.delete_item, width=100
+        )
+        self.DeleteButton.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
     def addstuff(self):
         id = self.AddIdBox.get().strip()
@@ -191,6 +195,21 @@ class App(customtkinter.CTk):
 
         except Exception as e:
             print(f"Error in change stream: {e}")
+
+    def delete_item(self):
+        selected_item = self.CurrentDocumentsDropdown.get()  # Get the selected item
+        if selected_item:
+            try:
+                result = collection.delete_one({"Item": selected_item})  # Delete the item from the database
+                if result.deleted_count > 0:
+                    print(f"Item '{selected_item}' was successfully deleted!")
+                    self.refresh_dropdown()  # Refresh the dropdown list after deletion
+                else:
+                    print(f"Item '{selected_item}' was not found, unable to delete.")
+            except Exception as e:
+                print(f"Error deleting item: {e}")
+        else:
+            print("No item selected for deletion.")
 
     def start_monitoring_changes(self):
         # Use a thread to avoid freezing the UI
