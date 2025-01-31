@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="made the weird stuff not weird and less bad (entire program changed)">
-      <change beforePath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="we're presenting this :(((((">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/face_rec.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_rec.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
@@ -195,8 +193,27 @@
       <option name="project" value="LOCAL" />
       <updated>1738085691513</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="we're presenting this :(((((">
+      <option name="closed" value="true" />
+      <created>1738169912991</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1738169912991</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="mongodb edit file" />
@@ -208,6 +225,7 @@
     <MESSAGE value="added the entirety of facial recognition based on provided images as reference" />
     <MESSAGE value="small changes (6700054 lines changed)" />
     <MESSAGE value="made the weird stuff not weird and less bad (entire program changed)" />
-    <option name="LAST_COMMIT_MESSAGE" value="made the weird stuff not weird and less bad (entire program changed)" />
+    <MESSAGE value="we're presenting this :(((((" />
+    <option name="LAST_COMMIT_MESSAGE" value="we're presenting this :(((((" />
   </component>
 </project>
