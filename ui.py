@@ -13,10 +13,21 @@ item_names = [doc["Item"] for doc in collection.find()]
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.geometry("400x300")
+        self.geometry("500x400")
+        self.title("Details / Logs")
 
-        self.label = customtkinter.CTkLabel(self, text="")
-        self.label.pack(padx=20, pady=20)
+        # Add a Scrollable Textbox
+        self.textbox = customtkinter.CTkTextbox(self, width=400, height=300)
+        self.textbox.pack(padx=20, pady=20)
+
+        # Add placeholder logs (example text)
+        self.textbox.insert("0.0", "Here are some logs or information...\n\n" * 10)
+
+        # Enable scrolling
+        self.scrollbar = customtkinter.CTkScrollbar(self, command=self.textbox.yview)
+        self.textbox.configure(yscrollcommand=self.scrollbar.set)
+
+        # Place the scrollbar to the right of the textbox
         self.grab_set()
         self.focus_force()
         self.after(200, self.release_grab)
