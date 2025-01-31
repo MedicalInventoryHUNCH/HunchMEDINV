@@ -3,6 +3,11 @@ import pymongo
 from pymongo import MongoClient
 from PIL import Image
 import threading
+import datetime
+
+import os
+# Logging function
+import datetime
 
 # Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -13,21 +18,31 @@ item_names = [doc["Item"] for doc in collection.find()]
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.geometry("500x400")
+        self.geometry("1200x1000")
         self.title("Details / Logs")
+        self.resizable(True, True)
 
-        # Add a Scrollable Textbox
-        self.textbox = customtkinter.CTkTextbox(self, width=400, height=300)
-        self.textbox.pack(padx=20, pady=20)
+# Add a Scrollable Textbox
+        self.textbox = customtkinter.CTkTextbox(self)
+        self.textbox.pack(padx=20, pady=20, fill="both", expand=True)
 
-        # Add placeholder logs (example text)
-        self.textbox.insert("0.0", "Here are some logs or information...\n\n" * 10)
+        # Display logs from file
+        self.display_logs()
 
+    def display_logs(self):
+        log_filename = "database_logs.txt"
+        if os.path.exists(log_filename):
+            with open(log_filename, "r") as log_file:
+                logs = log_file.read()
+                self.textbox.insert("0.0", logs)
+        else:
+            self.textbox.insert("0.0", "No logs available.\n")
         # Enable scrolling
         self.scrollbar = customtkinter.CTkScrollbar(self, command=self.textbox.yview)
         self.textbox.configure(yscrollcommand=self.scrollbar.set)
 
-        # Place the scrollbar to the right of the textbox
+# Place the scrollbar to the right of the textbox
+        self.scrollbar.pack(side="right", fill="y")
         self.grab_set()
         self.focus_force()
         self.after(200, self.release_grab)
@@ -88,7 +103,7 @@ class App(customtkinter.CTk):
         self.EditSelectedName.grid(row=2, column=0, padx=10, pady=5)
 
         self.ChangeNameAmountButton = customtkinter.CTkButton(
-            self.EditFrame, text="Update Name &/or Amount", command=self.update_name_amount, width=200
+            self.EditFrame, text="Update", command=self.update_name_amount, width=200
         )
         self.ChangeNameAmountButton.grid(row=3, column=1, padx=10, pady=10)
 
@@ -121,6 +136,12 @@ class App(customtkinter.CTk):
         )
         self.DeleteButton.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
+    def write_to_log(self, action, details):
+        log_filename = "database_logs.txt"
+        with open(log_filename, "a") as log_file:
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            log_file.write(f"[{timestamp}] {action}: {details}\n")
+
     def addstuff(self):
         name = self.AddNameBox.get().strip()
         amount = self.AddAmountBox.get().strip()
@@ -133,7 +154,8 @@ class App(customtkinter.CTk):
 
                 doc1 = {"_id": new_id, "Item": name, "Amount": int(amount)}
                 collection.insert_one(doc1)
-                print(f"Item added successfully with ID {new_id}!")
+                self.write_to_log("Add", f"Added item '{name}' with ID {new_id} and amount {amount}.")
+                print(f"Item added successfully to ID {new_id}!")
                 self.refresh_dropdown()
             except Exception as e:
                 print(f"Error adding item: {e}")
@@ -141,6 +163,7 @@ class App(customtkinter.CTk):
             print("Please fill name and amount fields.")
 
     def update_name_amount(self):
+        original_name = self.CurrentDocumentsDropdown.get()
         selected_item = self.CurrentDocumentsDropdown.get()
         new_name = self.EditSelectedName.get().strip()
         new_amount = self.EditSelectedAmount.get().strip()
@@ -158,12 +181,15 @@ class App(customtkinter.CTk):
         if selected_item and update_fields:
             try:
                 result = collection.update_one({"Item": selected_item}, {"$set": update_fields})
+                updated_fields_list = ", ".join([f"{key}: {value}" for key, value in update_fields.items()])
+                self.write_to_log("Update", f"Updated item '{original_name}' to {updated_fields_list}.")
                 if result.modified_count > 0:
-                    print(f"Updated '{selected_item}' with {update_fields}")
+                    print(f"Updated '{selected_item}' to {update_fields}")
                     self.refresh_dropdown()
                 else:
                     print("No item was updated.")
             except Exception as e:
+                self.write_to_log("Error", f"Failed to update item '{original_name}': {e}")
                 print(f"Error updating item: {e}")
         else:
             print("Please select an item and change at least one field.")
@@ -195,15 +221,18 @@ class App(customtkinter.CTk):
 
     def delete_item(self):
         selected_item = self.CurrentDocumentsDropdown.get()
+        selected_item = self.CurrentDocumentsDropdown.get()
         if selected_item:
             try:
                 result = collection.delete_one({"Item": selected_item})
                 if result.deleted_count > 0:
+                    self.write_to_log("Delete", f"Deleted item '{selected_item}'.")
                     print(f"Item '{selected_item}' was successfully deleted!")
                     self.refresh_dropdown()
                 else:
                     print(f"Item '{selected_item}' was not found.")
             except Exception as e:
+                self.write_to_log("Error", f"Failed to delete item '{selected_item}': {e}")
                 print(f"Error deleting item: {e}")
         else:
             print("No item selected for deletion.")
