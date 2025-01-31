@@ -7,8 +7,7 @@ from pymongo import MongoClient
 import os
 
 
-mongo_uri = os.getenv("MONGO_URI")  # Fetch the URI from the environment variables
-cluster = MongoClient(mongo_uri)
+cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = cluster["Inventory"]
 collection = db["astro"]
 collection1 = db["Inventory"]
@@ -67,9 +66,11 @@ def idnumber(tag_data):
 
 def nfc_read():
 
-    tag1 = clf.connect(rdwr={'on-connect': lambda tag: False})
-    tag_data = ndef.record if tag1.ndef else None
-
+    tag = clf.connect(rdwr={'on-connect': lambda tag: False})
+    tag_data = tag.ndef.records
+    if tag_data is None:
+        print("no tag data")
+        return
 
     id_num = idnumber(tag_data)
     if id_num is not None:
@@ -101,7 +102,8 @@ def main():
             # Capture and process one frame
             matches = capture_and_compare(cap, known_faces)
 
-            if matches is not None:
+            for i in range(0, 7):
+
                 print(f"Face matches with indices: {matches}")
                 nfc_read()
         except KeyboardInterrupt:
