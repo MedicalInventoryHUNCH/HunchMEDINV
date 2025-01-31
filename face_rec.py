@@ -9,8 +9,8 @@ import os
 
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = cluster["Inventory"]
-collection = db["astro"]
-collection1 = db["Inventory"]
+collection1 = db["astro"]
+collection = db["Inventory"]
 clf = nfc.ContactlessFrontend('usb')
 
 def load_known_faces():
@@ -75,12 +75,15 @@ def nfc_read():
     id_num = idnumber(tag_data)
     if id_num is not None:
         collection.update_many({"_id": id_num}, {"$inc": {"Amount": -1}})
-        time.sleep(2)
-
-    print("ready")
+        return id_num
     if id_num is None:
         print("no tag data")
         return
+def db_edit_face(matches, intmeds):
+    idastro = int(matches[0])
+    collection1.update_many({"_id": idastro}, {"$inc": {"Amount": 1}})
+
+
 
 def main():
     # Initialize webcam
@@ -102,10 +105,13 @@ def main():
             # Capture and process one frame
             matches = capture_and_compare(cap, known_faces)
 
-            for i in range(0, 7):
-
-                print(f"Face matches with indices: {matches}")
+            if matches is not None:
+                print(matches)
+                intmeds = nfc_read()
                 nfc_read()
+                time.sleep(2)
+                print("ready")
+                db_edit_face(matches, intmeds)
         except KeyboardInterrupt:
             # Clean up
             cap.release()
