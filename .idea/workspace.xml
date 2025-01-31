@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="we're presenting this :(((((">
+    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="logs (bad boy dom)">
+      <change beforePath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HunchPythonNFCREAL.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face_rec.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_rec.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bernardo test.py" beforeDir="false" afterPath="$PROJECT_DIR$/bernardo test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database_logs.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,26 +47,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Python.MONGODBEDIT.executor&quot;: &quot;Run&quot;,
-    &quot;Python.face_rec.executor&quot;: &quot;Run&quot;,
-    &quot;Python.face_rec1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mistake.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mongoEditastro.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.type.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ui.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/hunch/PycharmProjects/HunchPythonNFCREAL&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AIAssistantPromptsLibrary&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Python.MONGODBEDIT.executor": "Run",
+    "Python.bernardo test.executor": "Run",
+    "Python.face_rec.executor": "Run",
+    "Python.face_rec1.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.mistake.executor": "Run",
+    "Python.mongoEditastro.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.type.executor": "Run",
+    "Python.ui.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/hunch/PycharmProjects/HunchPythonNFCREAL",
+    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -193,27 +196,32 @@
       <option name="project" value="LOCAL" />
       <updated>1738085691513</updated>
     </task>
-    <task id="LOCAL-00014" summary="we're presenting this :(((((">
+    <task id="LOCAL-00014" summary="Made the ID increase by 1 everytime an item is created">
       <option name="closed" value="true" />
-      <created>1738169912991</created>
+      <created>1738338965583</created>
       <option name="number" value="00014" />
       <option name="presentableId" value="LOCAL-00014" />
       <option name="project" value="LOCAL" />
-      <updated>1738169912991</updated>
+      <updated>1738338965583</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="added logs">
+      <option name="closed" value="true" />
+      <created>1738342124511</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1738342124511</updated>
+    </task>
+    <task id="LOCAL-00016" summary="logs (bad boy dom)">
+      <option name="closed" value="true" />
+      <created>1738342329398</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1738342329398</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="mongodb edit file" />
@@ -225,7 +233,9 @@
     <MESSAGE value="added the entirety of facial recognition based on provided images as reference" />
     <MESSAGE value="small changes (6700054 lines changed)" />
     <MESSAGE value="made the weird stuff not weird and less bad (entire program changed)" />
-    <MESSAGE value="we're presenting this :(((((" />
-    <option name="LAST_COMMIT_MESSAGE" value="we're presenting this :(((((" />
+    <MESSAGE value="Made the ID increase by 1 everytime an item is created" />
+    <MESSAGE value="added logs" />
+    <MESSAGE value="logs (bad boy dom)" />
+    <option name="LAST_COMMIT_MESSAGE" value="logs (bad boy dom)" />
   </component>
 </project>
