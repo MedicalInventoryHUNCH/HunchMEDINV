@@ -4,10 +4,7 @@ from pymongo import MongoClient
 from PIL import Image
 import threading
 import datetime
-
 import os
-# Logging function
-import datetime
 
 # Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -22,7 +19,7 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         self.title("Details / Logs")
         self.resizable(True, True)
 
-# Add a Scrollable Textbox
+        # Add a Scrollable Textbox
         self.textbox = customtkinter.CTkTextbox(self)
         self.textbox.pack(padx=20, pady=20, fill="both", expand=True)
 
@@ -40,8 +37,7 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         # Enable scrolling
         self.scrollbar = customtkinter.CTkScrollbar(self, command=self.textbox.yview)
         self.textbox.configure(yscrollcommand=self.scrollbar.set)
-
-# Place the scrollbar to the right of the textbox
+        # Place the scrollbar to the right of the textbox
         self.scrollbar.pack(side="right", fill="y")
         self.grab_set()
         self.focus_force()
@@ -81,10 +77,14 @@ class App(customtkinter.CTk):
         self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount")
         self.AddAmountBox.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
+        # Expiration Date Entry Box
+        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="DD/MM/YYYY")
+        self.AddExpiry.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
+
         self.AddButton = customtkinter.CTkButton(
             self.AddItemFrame, text="Add Item", command=self.addstuff, width=150
         )
-        self.AddButton.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+        self.AddButton.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
 
         # Edit Section
         self.EditFrame = customtkinter.CTkFrame(self, corner_radius=10)
@@ -139,28 +139,45 @@ class App(customtkinter.CTk):
     def write_to_log(self, action, details):
         log_filename = "database_logs.txt"
         with open(log_filename, "a") as log_file:
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            # Log date only (YYYY-MM-DD)
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
             log_file.write(f"[{timestamp}] {action}: {details}\n")
 
     def addstuff(self):
         name = self.AddNameBox.get().strip()
         amount = self.AddAmountBox.get().strip()
+        expiry_str = self.AddExpiry.get().strip()
 
         if name and amount:
+            expiry_date_str = None
+            if expiry_str:
+                try:
+                    # Parse the input date and reformat it as a string
+                    expiry_date = datetime.datetime.strptime(expiry_str, "%d/%m/%Y")
+                    expiry_date_str = expiry_date.strftime("%Y-%m-%d")
+                except ValueError:
+                    print("Invalid expiry date format. Please use DD/MM/YYYY.")
+                    return
+
             try:
                 # Get the highest current ID
                 last_doc = collection.find_one(sort=[("_id", pymongo.DESCENDING)])
                 new_id = 1 if last_doc is None else last_doc['_id'] + 1
 
+                # Build the document; store the expiry as a formatted string if provided
                 doc1 = {"_id": new_id, "Item": name, "Amount": int(amount)}
+                if expiry_date_str:
+                    doc1["Expiry"] = expiry_date_str
+
                 collection.insert_one(doc1)
-                self.write_to_log("Add", f"Added item '{name}' with ID {new_id} and amount {amount}.")
-                print(f"Item added successfully to ID {new_id}!")
+                self.write_to_log("Add", f"Added item '{name}' with ID {new_id}, amount {amount}" +
+                                        (f", expiry {expiry_date_str}" if expiry_date_str else ""))
+                print(f"Item added successfully with ID {new_id}!")
                 self.refresh_dropdown()
             except Exception as e:
                 print(f"Error adding item: {e}")
         else:
-            print("Please fill name and amount fields.")
+            print("Please fill in both name and amount fields.")
 
     def update_name_amount(self):
         original_name = self.CurrentDocumentsDropdown.get()
@@ -220,7 +237,6 @@ class App(customtkinter.CTk):
             print(f"Error in change stream: {e}")
 
     def delete_item(self):
-        selected_item = self.CurrentDocumentsDropdown.get()
         selected_item = self.CurrentDocumentsDropdown.get()
         if selected_item:
             try:

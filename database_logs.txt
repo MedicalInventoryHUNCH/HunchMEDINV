@@ -30,3 +30,34 @@
 [2025-01-31 12:41:20] Add: Added item 'twenty-three' with ID 39 and amount 1.
 [2025-01-31 12:41:26] Add: Added item 'twenty-four' with ID 40 and amount 1.
 [2025-01-31 12:41:31] Add: Added item 'twenty-five' with ID 41 and amount 1.
+[2025-02-10 10:38:11] Add: Added item 'Justin' with ID 42, amount 1, and expiration date 2007-09-09.
+[2025-02-10 10:45:02] Delete: Deleted item 'James2'.
+[2025-02-10 10:45:59] Delete: Deleted item 'Benadryl'.
+[2025-02-10 10:46:23] Delete: Deleted item 'promtethazine which i am sippin on'.
+[2025-02-10 10:46:55] Delete: Deleted item 'Ibuprofen'.
+[2025-02-10 10:47:37] Delete: Deleted item 'nine'.
+[2025-02-10 12:18:52] Delete: Deleted item 'ten'.
+[2025-02-10 12:18:57] Delete: Deleted item 'Aura'.
+[2025-02-10 12:19:01] Delete: Deleted item 'rhyssux'.
+[2025-02-10 12:19:05] Delete: Deleted item 'Pepto-Bismol'.
+[2025-02-10 12:19:07] Delete: Deleted item 'Morphine'.
+[2025-02-10 12:19:11] Delete: Deleted item 'Promethazine'.
+[2025-02-10 12:19:13] Delete: Deleted item 'Ibuprofen'.
+[2025-02-10 12:19:15] Delete: Deleted item 'Oxycotin'.
+[2025-02-10 12:19:18] Delete: Deleted item 'Unbothered King'.
+[2025-02-10 12:19:19] Delete: Deleted item 'one'.
+[2025-02-10 12:19:21] Delete: Deleted item 'two'.
+[2025-02-10 12:19:23] Delete: Deleted item 'four'.
+[2025-02-10 12:19:25] Delete: Deleted item 'three'.
+[2025-02-10 12:19:27] Delete: Deleted item 'five'.
+[2025-02-10 12:19:29] Delete: Deleted item 'six'.
+[2025-02-10 12:19:31] Delete: Deleted item 'seven'.
+[2025-02-10 12:19:32] Delete: Deleted item 'eight'.
+[2025-02-10 12:19:34] Delete: Deleted item 'eleven'.
+[2025-02-10 12:19:36] Delete: Deleted item 'twelve'.
+[2025-02-10 12:19:38] Delete: Deleted item 'thirteen'.
+[2025-02-10 12:21:36] Add: Added item 'Tylenol' with ID 1 and amount 2.
+[2025-02-10 12:24:56] Add: Added item 'Soap' with ID 2, amount 5, expiry 22/06/2028
+[2025-02-10] Add: Added item 'Garlic Parmesean Wing' with ID 3, amount 5, expiry 22/09/2007
+[2025-02-10] Add: Added item 'test' with ID 4, amount 1, expiry 22/12/2222
+[2025-02-10] Add: Added item 'grte' with ID 5, amount 12, expiry 1111-11-11
