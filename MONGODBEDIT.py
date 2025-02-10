@@ -18,8 +18,7 @@ while True:
         amount2 = input("input amount: ")
         amount3 = input("input amount: ")
         amount4 = input("input amount: ")
-        amount5 = input("input "
-                        "amount: ")
+        amount5 = input("input amount: ")
         amount6 = input("input amount: ")
 
 

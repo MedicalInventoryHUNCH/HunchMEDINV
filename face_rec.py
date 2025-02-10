@@ -17,7 +17,7 @@ def load_known_faces():
     known_faces = []
     try:
         # Load all reference faces
-        for i in range(2, 9):
+        for i in range(0, 6):
             img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
             encoding = face_recognition.face_encodings(img)[0]
             known_faces.append(encoding)
@@ -57,7 +57,6 @@ def idnumber(tag_data):
         print("scanned" + str(tag_data))
         meds = str(tag_data)
         splitmeds = meds.split('%')
-        print(int(splitmeds[2]))
         intmeds = int(splitmeds[2])
         return intmeds
 
@@ -76,13 +75,22 @@ def nfc_read():
     if id_num is not None:
         collection.update_many({"_id": id_num}, {"$inc": {"Amount": -1}})
         return id_num
-    if id_num is None:
-        print("no tag data")
-        return
-def db_edit_face(matches, intmeds):
-    idastro = int(matches[0])
-    collection1.update_many({"_id": idastro}, {"$inc": {"Amount": 1}})
 
+    if id_num is None:
+        print("no id num data")
+        return
+
+def db_edit_face(matches, intmeds):
+
+    idastro = int(matches[0])
+    if idastro and intmeds is not None:
+        collection1.update_many({"_id": idastro}, {"$inc": {f"Amount:{intmeds}": 1}})
+        print(f"face matches with {idastro} :D ")
+        return
+
+    if idastro is None:
+        print("no matching face data")
+        return
 
 
 def main():
@@ -90,7 +98,7 @@ def main():
     cap = cv2.VideoCapture(0)
     try:
         known_faces = load_known_faces()
-
+        load_known_faces()
     except Exception as e:
         print(f"Error: {e}")
         return
@@ -105,13 +113,17 @@ def main():
             # Capture and process one frame
             matches = capture_and_compare(cap, known_faces)
 
-            if matches is not None:
-                print(matches)
-                intmeds = nfc_read()
-                nfc_read()
-                time.sleep(2)
-                print("ready")
-                db_edit_face(matches, intmeds)
+            if matches:
+                try:
+                    print(matches)
+                    intmeds = nfc_read()
+                    nfc_read()
+                    db_edit_face(matches, intmeds)
+                    time.sleep(2)
+                    print("ready")
+
+                except AttributeError:
+                    print("no tag data")
         except KeyboardInterrupt:
             # Clean up
             cap.release()
