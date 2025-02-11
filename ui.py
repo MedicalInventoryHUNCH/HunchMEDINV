@@ -1,5 +1,6 @@
 import customtkinter
 import pymongo
+from customtkinter import CTkEntry
 from pymongo import MongoClient
 from PIL import Image
 import threading
@@ -71,14 +72,14 @@ class App(customtkinter.CTk):
         self.AddItemLabel = customtkinter.CTkLabel(self.AddItemFrame, text="Add New Item", font=("Arial", 18))
         self.AddItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
-        self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name")
+        self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name", width=300)
         self.AddNameBox.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount")
+        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount", width=300)
         self.AddAmountBox.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
         # Expiration Date Entry Box
-        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="DD/MM/YYYY")
+        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: DD/MM/YYYY", width=300)
         self.AddExpiry.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
 
         self.AddButton = customtkinter.CTkButton(
@@ -99,17 +100,20 @@ class App(customtkinter.CTk):
         self.CurrentDocumentsDropdown.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
         # Change Name
-        self.EditSelectedName = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name")
+        self.EditSelectedName = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name", width=200)
         self.EditSelectedName.grid(row=2, column=0, padx=10, pady=5)
 
-        self.ChangeNameAmountButton = customtkinter.CTkButton(
+        self.UpdateButton = customtkinter.CTkButton(
             self.EditFrame, text="Update", command=self.update_name_amount, width=200
         )
-        self.ChangeNameAmountButton.grid(row=3, column=1, padx=10, pady=10)
+        self.UpdateButton.grid(row=5, column=1, padx=10, pady=10)
 
         # Change Amount
-        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount")
+        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount", width=200)
         self.EditSelectedAmount.grid(row=3, column=0, padx=10, pady=5)
+
+        self.EditSelectedExpiry = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Expiration Date", width=200)
+        self.EditSelectedExpiry.grid(row=4, column=0, padx=10, pady=5)
 
         # James' Picture (IMPORTANT PART)
         self.James = customtkinter.CTkImage(
@@ -134,7 +138,8 @@ class App(customtkinter.CTk):
         self.DeleteButton = customtkinter.CTkButton(
             self.EditFrame, text="Delete Item", command=self.delete_item, width=100
         )
-        self.DeleteButton.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.DeleteButton.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+
 
     def write_to_log(self, action, details):
         log_filename = "database_logs.txt"
@@ -184,6 +189,7 @@ class App(customtkinter.CTk):
         selected_item = self.CurrentDocumentsDropdown.get()
         new_name = self.EditSelectedName.get().strip()
         new_amount = self.EditSelectedAmount.get().strip()
+        new_expiry = self.EditSelectedExpiry.get().strip()
 
         update_fields = {}
         if new_name:
@@ -193,6 +199,14 @@ class App(customtkinter.CTk):
                 update_fields["Amount"] = int(new_amount)
             except ValueError:
                 print("Amount must be an integer.")
+                return
+        if new_expiry:
+            try:
+                expiry_date = datetime.datetime.strptime(new_expiry, "%d/%m/%Y")
+                expiry_date_str = expiry_date.strftime("%Y-%m-%d")
+                update_fields["Expiry"] = expiry_date_str
+            except ValueError:
+                print("Invalid expiry date format. Please use DD/MM/YYYY.")
                 return
 
         if selected_item and update_fields:

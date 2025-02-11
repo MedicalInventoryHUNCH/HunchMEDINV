@@ -61,3 +61,13 @@
 [2025-02-10] Add: Added item 'Garlic Parmesean Wing' with ID 3, amount 5, expiry 22/09/2007
 [2025-02-10] Add: Added item 'test' with ID 4, amount 1, expiry 22/12/2222
 [2025-02-10] Add: Added item 'grte' with ID 5, amount 12, expiry 1111-11-11
+[2025-02-11] Add: Added item 'Rhys' with ID 6, amount 1, expiry 2025-11-02
+[2025-02-11] Update: Updated item 'grte' to Amount: 1.
+[2025-02-11] Update: Updated item 'grte' to Amount: 1.
+[2025-02-11] Update: Updated item 'grte' to Amount: 1.
+[2025-02-11] Update: Updated item 'grte' to Amount: 1.
+[2025-02-11] Update: Updated item 'Justin' to Amount: 1.
+[2025-02-11] Update: Updated item 'Rhys' to Amount: 1.
+[2025-02-11] Update: Updated item 'Rhys' to Amount: 2.
+[2025-02-11] Update: Updated item 'Rhys' to Amount: 1.
+[2025-02-11] Update: Updated item 'Justin' to Expiry: 1111-11-01.
