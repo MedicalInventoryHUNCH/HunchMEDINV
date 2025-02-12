@@ -1,6 +1,5 @@
 import customtkinter
 import pymongo
-from customtkinter import CTkEntry
 from pymongo import MongoClient
 from PIL import Image
 import threading

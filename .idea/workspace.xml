@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="slightly better">
+    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="added expiration dates">
+      <change afterPath="$PROJECT_DIR$/stuff.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/face_rec.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_rec.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +33,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MedicalInventoryHUNCH/HunchPythonNFCREAL.git&quot;,
-    &quot;accountId&quot;: &quot;4d3a4e33-b5e1-4b2a-a1f2-83b275cbafde&quot;
+    &quot;accountId&quot;: &quot;f455bfa1-f4d4-4c3c-8a88-85a96b47a524&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -75,7 +76,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-1b1018131e27-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.180" />
+        <option value="bundled-python-sdk-fb887030ada0-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.21565.199" />
       </set>
     </attachedChunks>
   </component>
@@ -208,7 +209,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738334036142</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added expiration dates">
+      <option name="closed" value="true" />
+      <created>1739283407118</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1739283407118</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -234,6 +243,8 @@
     <MESSAGE value="made the weird stuff not weird and less bad (entire program changed)" />
     <MESSAGE value="we're presenting this :(((((" />
     <MESSAGE value="slightly better" />
-    <option name="LAST_COMMIT_MESSAGE" value="slightly better" />
+    <MESSAGE value="Expiration Date" />
+    <MESSAGE value="added expiration dates" />
+    <option name="LAST_COMMIT_MESSAGE" value="added expiration dates" />
   </component>
 </project>
