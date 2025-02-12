@@ -4,10 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="added expiration dates">
-      <change afterPath="$PROJECT_DIR$/stuff.py" afterDir="false" />
+    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="slightly better">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/face_rec.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_rec.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures/face2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pictures/face2.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures/face3.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pictures/face3.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures/face4.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pictures/face4.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures/face5.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pictures/face5.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures/face6.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pictures/face6.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pictures/face7.jpg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +38,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/MedicalInventoryHUNCH/HunchPythonNFCREAL.git&quot;,
-    &quot;accountId&quot;: &quot;f455bfa1-f4d4-4c3c-8a88-85a96b47a524&quot;
+    &quot;accountId&quot;: &quot;4d3a4e33-b5e1-4b2a-a1f2-83b275cbafde&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -45,26 +50,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Python.MONGODBEDIT.executor&quot;: &quot;Run&quot;,
-    &quot;Python.face_rec.executor&quot;: &quot;Run&quot;,
-    &quot;Python.face_rec1.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mistake.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mongoEditastro.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.type.executor&quot;: &quot;Run&quot;,
-    &quot;Python.ui.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/hunch/PycharmProjects/HunchPythonNFCREAL&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.AIAssistantPromptsLibrary&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Python.MONGODBEDIT.executor": "Run",
+    "Python.face_rec.executor": "Run",
+    "Python.face_rec1.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.mistake.executor": "Run",
+    "Python.mongoEditastro.executor": "Run",
+    "Python.stuff.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.type.executor": "Run",
+    "Python.ui.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/hunch/PycharmProjects/HunchPythonNFCREAL",
+    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -76,7 +82,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fb887030ada0-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.21565.199" />
+        <option value="bundled-python-sdk-1b1018131e27-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.180" />
       </set>
     </attachedChunks>
   </component>
@@ -209,15 +215,7 @@
       <option name="project" value="LOCAL" />
       <updated>1738334036142</updated>
     </task>
-    <task id="LOCAL-00016" summary="added expiration dates">
-      <option name="closed" value="true" />
-      <created>1739283407118</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1739283407118</updated>
-    </task>
-    <option name="localTasksCounter" value="17" />
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -243,8 +241,6 @@
     <MESSAGE value="made the weird stuff not weird and less bad (entire program changed)" />
     <MESSAGE value="we're presenting this :(((((" />
     <MESSAGE value="slightly better" />
-    <MESSAGE value="Expiration Date" />
-    <MESSAGE value="added expiration dates" />
-    <option name="LAST_COMMIT_MESSAGE" value="added expiration dates" />
+    <option name="LAST_COMMIT_MESSAGE" value="slightly better" />
   </component>
 </project>
