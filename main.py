@@ -5,20 +5,14 @@ from PIL import Image
 import threading
 import datetime
 import os
-import face_recognition
-import cv2
-import nfc
-import ndef
-import time
+import subprocess
+import sys
 
 # Connect to MongoDB
-cluster = MongoClient(
-    "mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = cluster["Inventory"]
 collection = db["Inventory"]
-collection1 = db["astro"]  # For face recognition data
 item_names = [doc["Item"] for doc in collection.find()]
-
 
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
@@ -27,8 +21,11 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         self.title("Details / Logs")
         self.resizable(True, True)
 
+        # Add a Scrollable Textbox
         self.textbox = customtkinter.CTkTextbox(self)
         self.textbox.pack(padx=20, pady=20, fill="both", expand=True)
+
+        # Display logs from file
         self.display_logs()
 
     def display_logs(self):
@@ -39,8 +36,10 @@ class ToplevelWindow(customtkinter.CTkToplevel):
                 self.textbox.insert("0.0", logs)
         else:
             self.textbox.insert("0.0", "No logs available.\n")
+        # Enable scrolling
         self.scrollbar = customtkinter.CTkScrollbar(self, command=self.textbox.yview)
         self.textbox.configure(yscrollcommand=self.scrollbar.set)
+        # Place the scrollbar to the right of the textbox
         self.scrollbar.pack(side="right", fill="y")
         self.grab_set()
         self.focus_force()
@@ -49,96 +48,250 @@ class ToplevelWindow(customtkinter.CTkToplevel):
     def release_grab(self):
         self.grab_release()
 
-
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-        self.nfc_reader = nfc.ContactlessFrontend('usb')
-        self.cap = cv2.VideoCapture(0)
-        self.known_faces = self.load_known_faces()
 
-        self.setup_gui()
-        self.start_background_threads()
-
-    def setup_gui(self):
+        # Set appearance
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
         self.title("Medical Inventory")
         self.geometry("800x700")
 
-        # [Keep all the original GUI setup code from the first script]
-        # ... (same as original GUI setup code)
+        self.toplevel_window = None
 
-    def load_known_faces(self):
-        known_faces = []
-        try:
-            for i in range(6):
-                img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
-                encoding = face_recognition.face_encodings(img)[0]
-                known_faces.append(encoding)
-            return known_faces
-        except Exception as e:
-            print(f"Error loading faces: {e}")
-            return []
+        # Title Label
+        self.TitleLabel = customtkinter.CTkLabel(
+            self, text="Medical Inventory System", text_color="White", font=("Arial", 24, "bold")
+        )
+        self.TitleLabel.grid(row=0, column=0, columnspan=3, pady=20)
 
-    def start_background_threads(self):
-        face_thread = threading.Thread(target=self.face_recognition_loop, daemon=True)
-        face_thread.start()
+        # Add Item Section
+        self.AddItemFrame = customtkinter.CTkFrame(self, corner_radius=10)
+        self.AddItemFrame.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
 
-        nfc_thread = threading.Thread(target=self.nfc_monitor_loop, daemon=True)
-        nfc_thread.start()
+        self.AddItemLabel = customtkinter.CTkLabel(self.AddItemFrame, text="Add New Item", font=("Arial", 18))
+        self.AddItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
-    def face_recognition_loop(self):
-        while True:
+        self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name", width=300)
+        self.AddNameBox.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
+
+        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount", width=300)
+        self.AddAmountBox.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
+
+        # Expiration Date Entry Box
+        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: MM/DD/YYYY", width=300)
+        self.AddExpiry.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
+
+        self.FaceRecButton = customtkinter.CTkButton(
+            self,
+            text="Start Face Recognition",
+            command=self.start_face_rec,
+            width=200
+        )
+        self.FaceRecButton.grid(row=3, column=1, padx=20, pady=20)
+
+        self.AddButton = customtkinter.CTkButton(
+            self.AddItemFrame, text="Add Item", command=self.addstuff, width=150
+        )
+        self.AddButton.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+
+        # Edit Section
+        self.EditFrame = customtkinter.CTkFrame(self, corner_radius=10)
+        self.EditFrame.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
+
+        self.EditItemLabel = customtkinter.CTkLabel(self.EditFrame, text="Edit Existing Item", font=("Arial", 18))
+        self.EditItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
+
+        self.CurrentDocumentsDropdown = customtkinter.CTkOptionMenu(
+            self.EditFrame, values=item_names, width=200
+        )
+        self.CurrentDocumentsDropdown.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
+
+        # Change Name
+        self.EditSelectedName = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name", width=300)
+        self.EditSelectedName.grid(row=2, column=0, padx=10, pady=5)
+
+        self.UpdateButton = customtkinter.CTkButton(
+            self.EditFrame, text="Update", command=self.update_name_amount, width=300
+        )
+        self.UpdateButton.grid(row=5, column=1, padx=10, pady=10)
+
+        # Change Amount
+        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount", width=300)
+        self.EditSelectedAmount.grid(row=3, column=0, padx=10, pady=5)
+
+        self.EditSelectedExpiry = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Expiration Date: MM/DD/YYYY", width=300)
+        self.EditSelectedExpiry.grid(row=4, column=0, padx=10, pady=5)
+
+        # James' Picture (IMPORTANT PART)
+        self.James = customtkinter.CTkImage(
+            dark_image=Image.open("pictures/face5.jpg"),
+            size=(1000, 250)
+        )
+        self.PicOfJames = customtkinter.CTkLabel(
+            self,
+            image=self.James,
+            text="",
+            corner_radius=20
+        )
+        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10, rowspan=2)
+
+        self.ViewLogsButton = customtkinter.CTkButton(
+            self, text="Logs Placeholder", command=self.view_logs, width=200
+        )
+        self.ViewLogsButton.grid(row=3, column=0, padx=20, pady=20)
+
+        self.start_monitoring_changes()
+
+        self.DeleteButton = customtkinter.CTkButton(
+            self.EditFrame, text="Delete Item", command=self.delete_item, width=100
+        )
+        self.DeleteButton.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+
+
+    def write_to_log(self, action, details):
+        log_filename = "database_logs.txt"
+        with open(log_filename, "a") as log_file:
+            # Log date only (YYYY-MM-DD)
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
+            log_file.write(f"[{timestamp}] {action}: {details}\n")
+
+    def addstuff(self):
+        name = self.AddNameBox.get().strip()
+        amount = self.AddAmountBox.get().strip()
+        expiry_str = self.AddExpiry.get().strip()
+
+        if name and amount:
+            expiry_date_str = None
+            if expiry_str:
+                try:
+                    # Parse the input date and reformat it as a string
+                    expiry_date = datetime.datetime.strptime(expiry_str, "%m/%d/%Y")
+                    expiry_date_str = expiry_date.strftime("%Y-%d-%m")
+                except ValueError:
+                    print("Invalid expiry date format. Please use DD/MM/YYYY.")
+                    return
+
             try:
-                ret, frame = self.cap.read()
-                if not ret:
-                    continue
+                # Get the highest current ID
+                last_doc = collection.find_one(sort=[("_id", pymongo.DESCENDING)])
+                new_id = 1 if last_doc is None else last_doc['_id'] + 1
 
-                face_locations = face_recognition.face_locations(frame)
-                if face_locations:
-                    face_encoding = face_recognition.face_encodings(frame, face_locations)[0]
-                    matches = face_recognition.compare_faces(self.known_faces, face_encoding)
-                    if True in matches:
-                        first_match_index = matches.index(True)
-                        print(f"Recognized face ID: {first_match_index}")
+                # Build the document; store the expiry as a formatted string if provided
+                doc1 = {"_id": new_id, "Item": name, "Amount": int(amount)}
+                if expiry_date_str:
+                    doc1["Expiry"] = expiry_date_str
+
+                collection.insert_one(doc1)
+                self.write_to_log("Add", f"Added item '{name}' with ID {new_id}, amount {amount}" +
+                                        (f", expiry {expiry_date_str}" if expiry_date_str else ""))
+                print(f"Item added successfully with ID {new_id}!")
+                self.refresh_dropdown()
             except Exception as e:
-                print(f"Face recognition error: {e}")
-            time.sleep(1)
+                print(f"Error adding item: {e}")
+        else:
+            print("Please fill in both name and amount fields.")
 
-    def nfc_monitor_loop(self):
-        while True:
+    def update_name_amount(self):
+        original_name = self.CurrentDocumentsDropdown.get()
+        selected_item = self.CurrentDocumentsDropdown.get()
+        new_name = self.EditSelectedName.get().strip()
+        new_amount = self.EditSelectedAmount.get().strip()
+        new_expiry = self.EditSelectedExpiry.get().strip()
+
+        update_fields = {}
+        if new_name:
+            update_fields["Item"] = new_name
+        if new_amount:
             try:
-                tag = self.nfc_reader.connect(rdwr={'on-connect': lambda tag: False})
-                if tag.ndef:
-                    records = tag.ndef.records
-                    self.process_nfc_tag(records)
-            except Exception as e:
-                print(f"NFC error: {e}")
-            time.sleep(1)
+                update_fields["Amount"] = int(new_amount)
+            except ValueError:
+                print("Amount must be an integer.")
+                return
+        if new_expiry:
+            try:
+                expiry_date = datetime.datetime.strptime(new_expiry, "%d/%m/%Y")
+                expiry_date_str = expiry_date.strftime("%Y-%m-%d")
+                update_fields["Expiry"] = expiry_date_str
+            except ValueError:
+                print("Invalid expiry date format. Please use DD/MM/YYYY.")
+                return
 
-    def process_nfc_tag(self, records):
-        try:
-            record = str(records[0])
-            if "NFCNASAMED" in record:
-                parts = record.split('%')
-                if len(parts) >= 3:
-                    item_id = int(parts[2])
-                    collection.update_one({"_id": item_id}, {"$inc": {"Amount": -1}})
-                    self.write_to_log("NFC Scan", f"Decremented item ID {item_id}")
+        if selected_item and update_fields:
+            try:
+                result = collection.update_one({"Item": selected_item}, {"$set": update_fields})
+                updated_fields_list = ", ".join([f"{key}: {value}" for key, value in update_fields.items()])
+                self.write_to_log("Update", f"Updated item '{original_name}' to {updated_fields_list}.")
+                if result.modified_count > 0:
+                    print(f"Updated '{selected_item}' to {update_fields}")
                     self.refresh_dropdown()
+                else:
+                    print("No item was updated.")
+            except Exception as e:
+                self.write_to_log("Error", f"Failed to update item '{original_name}': {e}")
+                print(f"Error updating item: {e}")
+        else:
+            print("Please select an item and change at least one field.")
+
+    def refresh_dropdown(self):
+        global item_names
+        item_names = [doc["Item"] for doc in collection.find()]
+        self.CurrentDocumentsDropdown.configure(values=item_names)
+
+    def view_logs(self):
+        if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
+            self.toplevel_window = ToplevelWindow(self)
+        else:
+            self.toplevel_window.focus_force()
+
+    def monitor_changes(self):
+        change_pipeline = [{"$match": {"operationType": "update"}}]
+        try:
+            with collection.watch(pipeline=change_pipeline, full_document="updateLookup") as stream:
+                for change in stream:
+                    updated_id = change["documentKey"].get("_id")
+                    updated_fields = change["updateDescription"]["updatedFields"]
+                    new_amount = updated_fields.get("Amount")
+                    new_name = change["fullDocument"].get("Item")
+                    previous_amount = change["fullDocument"].get("Amount", new_amount)
+                    print(f"ID: {updated_id}, Name: {new_name}, Previous Amount: {previous_amount}, New Amount: {new_amount}")
         except Exception as e:
-            print(f"Error processing NFC tag: {e}")
+            print(f"Error in change stream: {e}")
 
-    # [Keep all the original database methods from the first script]
-    # ... (same as original database methods)
+    def delete_item(self):
+        selected_item = self.CurrentDocumentsDropdown.get()
+        if selected_item:
+            try:
+                result = collection.delete_one({"Item": selected_item})
+                if result.deleted_count > 0:
+                    self.write_to_log("Delete", f"Deleted item '{selected_item}'.")
+                    print(f"Item '{selected_item}' was successfully deleted!")
+                    self.refresh_dropdown()
+                else:
+                    print(f"Item '{selected_item}' was not found.")
+            except Exception as e:
+                self.write_to_log("Error", f"Failed to delete item '{selected_item}': {e}")
+                print(f"Error deleting item: {e}")
+        else:
+            print("No item selected for deletion.")
 
-    def destroy(self):
-        self.cap.release()
-        self.nfc_reader.close()
-        super().destroy()
+    def start_monitoring_changes(self):
+        monitor_thread = threading.Thread(target=self.monitor_changes, daemon=True)
+        monitor_thread.start()
 
+    def start_face_rec(self):
+        """Start face recognition script in a separate thread"""
+        threading.Thread(target=self.run_face_recognition, daemon=True).start()
 
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    def run_face_recognition(self):
+        """Execute the face recognition script"""
+        try:
+            subprocess.run([sys.executable, 'face_rec.py'])
+            self.write_to_log("System", "Started face recognition system")
+        except Exception as e:
+            print(f"Error running face recognition script: {e}")
+            self.write_to_log("Error", f"Failed to start face recognition: {e}")
+
+app = App()
+app.mainloop()
