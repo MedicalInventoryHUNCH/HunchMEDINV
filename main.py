@@ -56,6 +56,7 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         # Place the scrollbar to the right of the textbox
         self.scrollbar.pack(side="right", fill="y")
         self.grab_set()
+        print("UI Loaded, face recognition running in background.")
         self.focus_force()
         self.after(200, self.release_grab)
 
@@ -64,6 +65,8 @@ class ToplevelWindow(customtkinter.CTkToplevel):
 
 class App(customtkinter.CTk):
     def __init__(self):
+        self.face_recognition_thread = None
+        self.face_recognition_error = None
         super().__init__()
 
         # Set appearance
@@ -149,7 +152,7 @@ class App(customtkinter.CTk):
         self.ViewLogsButton.grid(row=3, column=0, padx=20, pady=20)
 
         self.start_monitoring_changes()
-
+        self.start_face_recognition()
         self.DeleteButton = customtkinter.CTkButton(
             self.EditFrame, text="Delete Item", command=self.delete_item, width=100
         )
@@ -281,8 +284,46 @@ class App(customtkinter.CTk):
                 print(f"Error deleting item: {e}")
         else:
             print("No item selected for deletion.")
+    def start_face_recognition(self):
+        self.face_recognition_thread = threading.Thread(target=self.run_face_recognition, daemon=True)
+        self.face_recognition_thread.start()
 
-    def start_monitoring_changes(self):
+    def run_face_recognition(self):
+        # Initialize webcam
+        cap = cv2.VideoCapture(0)
+        try:
+            known_faces = load_known_faces()
+            print("Known faces loaded")
+        except Exception as e:
+            self.face_recognition_error = f"Error loading known faces: {e}"
+            print(self.face_recognition_error)
+            return
+
+        while True:
+            if not cap.isOpened():
+                self.face_recognition_error = "Error: Cannot open webcam"
+                print(self.face_recognition_error)
+                return
+
+            try:
+                matches = capture_and_compare(cap, known_faces)
+                result = check_value_with_timeout(10)
+                if matches is not None:
+                    if result is not None:
+                        intmeds = nfc_read()
+                        db_edit_face(matches, intmeds)
+                        print("Processing completed")
+                    else:
+                        print("No NFC tag scanned")
+                else:
+                    print("No matching face detected")
+                    time.sleep(2)
+            except Exception as e:
+                print(f"Error in face recognition thread: {e}")
+                self.face_recognition_error = f"Error: {e}"
+                break
+        cap.release()
+        cv2.destroyAllWindows()
         monitor_thread = threading.Thread(target=self.monitor_changes, daemon=True)
         monitor_thread.start()
 
@@ -296,6 +337,7 @@ class NFCReaderThread(threading.Thread):
         super().__init__()
         self.result = None
         self.error = None
+        self.running = True
 
     def run(self):
         try:
@@ -372,6 +414,7 @@ def check_value_with_timeout(timeout_seconds):
 
     # Start NFCReaderThread, which runs nfc_read() in the background
     nfc_thread = NFCReaderThread()
+    nfc_thread.running = True
     nfc_thread.start()  # Start running the thread
     nfc_thread.join(timeout_seconds)
 
@@ -381,6 +424,7 @@ def check_value_with_timeout(timeout_seconds):
 
     if nfc_thread.error:
         print(f"Error in NFC reader: {nfc_thread.error}")
+        nfc_thread.running = False
         return None
 
     print(f"NFC Read Result: {nfc_thread.result}")
@@ -399,55 +443,8 @@ def db_edit_face(matches, intmeds):
         return
 
 def main():
-    # Initialize webcam
-    cap = cv2.VideoCapture(0)
     app = App()
     app.mainloop()
-    print("webcam started")
-    try:
-        known_faces = load_known_faces()
-        print("known faces loaded")
-    except Exception as e:
-        print(f"Error: {e}")
-        print("Exiting...")
-        return
-
-    while True:
-        if not cap.isOpened():
-            print("Error: Cannot open webcam")
-            return
-
-        try:
-            # Load known faces
-            # Capture and process one frame
-            matches = capture_and_compare(cap, known_faces)
-            result = check_value_with_timeout(10)
-            print(matches)
-            if matches is not None:
-                try:
-                    if result is None:
-                        print("no nfc tag scanned")
-                        continue
-
-                    if result is not None:
-                        intmeds = nfc_read()
-                        db_edit_face(matches, intmeds)
-                        print("ready")
-                    else:
-                        print("AAAAAAAAAAAAAA")
-                        continue
-                except AttributeError:
-                    print("no tag data")
-            else:
-                print("No matching face detected")
-                time.sleep(2)
-                print("ready")
-
-        except KeyboardInterrupt:
-            # Clean up
-            cap.release()
-            cv2.destroyAllWindows()
-            clf.close()
 
 if __name__ == "__main__":
     main()
