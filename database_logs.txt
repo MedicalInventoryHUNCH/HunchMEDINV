@@ -71,3 +71,8 @@
 [2025-02-11] Update: Updated item 'Rhys' to Amount: 2.
 [2025-02-11] Update: Updated item 'Rhys' to Amount: 1.
 [2025-02-11] Update: Updated item 'Justin' to Expiry: 1111-11-01.
+[2025-02-12] Update: Updated item 'Justin' to Expiry: 1212-12-12.
+[2025-02-12] Add: Added item 'Tylenol' with ID 1, amount 12, expiry 2025-02-12
+[2025-02-12] Add: Added item 'Tylenol' with ID 2, amount 12, expiry 2025-02-13
+[2025-02-12] Add: Added item 'Ibuprofen' with ID 2, amount 86, expiry 2024-12-24
+[2025-02-12] Add: Added item 'Ibuprofen' with ID 3, amount 86, expiry 2024-12-24
