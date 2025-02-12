@@ -1,32 +1,91 @@
-import threading
-
-import face_recognition
-import cv2
-import time
-import nfc
-from pymongo import MongoClient
-import ndef
-
-
-cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-db = cluster["Inventory"]
-collection1 = db["astro"]
-collection = db["Inventory"]
-clf = nfc.ContactlessFrontend('usb')
-
 import customtkinter
 import pymongo
 from pymongo import MongoClient
 from PIL import Image
 import threading
 import datetime
+import time
 import os
+import cv2
+import face_recognition
+import nfc
+from threading import Thread, Event
+
+
 
 # Connect to MongoDB
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = cluster["Inventory"]
 collection = db["Inventory"]
 item_names = [doc["Item"] for doc in collection.find()]
+
+
+class FacialRecognitionThread(Thread):
+    def __init__(self, db):
+        super().__init__(daemon=True)
+        self.db = db
+        self.running = Event()
+        self.running.set()
+        self.clf = nfc.ContactlessFrontend('usb')
+        self.cap = cv2.VideoCapture(0)
+        self.known_faces = self.load_known_faces()
+
+    def load_known_faces(self):
+        known_faces = []
+        for i in range(6):
+            img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
+            encoding = face_recognition.face_encodings(img)[0]
+            known_faces.append(encoding)
+        return known_faces
+
+    def run(self):
+        print("Facial recognition system activated")
+        while self.running.is_set():
+            try:
+                # Face detection
+                ret, frame = self.cap.read()
+                if not ret: continue
+
+                face_encodings = face_recognition.face_encodings(frame)
+                if not face_encodings: continue
+
+                matches = face_recognition.compare_faces(
+                    self.known_faces, face_encodings[0]
+                )
+
+                # NFC handling
+                tag = self.clf.connect(rdwr={'on-connect': lambda tag: False})
+                if tag and tag.ndef:
+                    self.process_nfc(tag.ndef.records, matches)
+
+            except Exception as e:
+                print(f"Machine Spirit grumbles: {str(e)}")
+            time.sleep(0.1)
+
+        # Cleanup when stopping
+        self.cap.release()
+        self.clf.close()
+        cv2.destroyAllWindows()
+
+    def process_nfc(self, records, matches):
+        try:
+            if "NFCNASAMED" in str(records):
+                parts = str(records).split('%')
+                med_id = int(parts[2])
+                astro_id = [i for i, match in enumerate(matches) if match][0]
+
+                # Update inventory
+                self.db.Inventory.update_one({"_id": med_id}, {"$inc": {"Amount": -1}})
+                self.db.astro.update_one(
+                    {"_id": astro_id},
+                    {"$inc": {f"Amount:{med_id}": 1}}
+                )
+                print(f"Updated: Astro {astro_id} took med {med_id}")
+
+        except Exception as e:
+            print(f"Database communion failed: {str(e)}")
+
+
 
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
@@ -56,7 +115,6 @@ class ToplevelWindow(customtkinter.CTkToplevel):
         # Place the scrollbar to the right of the textbox
         self.scrollbar.pack(side="right", fill="y")
         self.grab_set()
-        print("UI Loaded, face recognition running in background.")
         self.focus_force()
         self.after(200, self.release_grab)
 
@@ -65,8 +123,7 @@ class ToplevelWindow(customtkinter.CTkToplevel):
 
 class App(customtkinter.CTk):
     def __init__(self):
-        self.face_recognition_thread = None
-        self.face_recognition_error = None
+        self.fr_thread = FacialRecognitionThread(db)
         super().__init__()
 
         # Set appearance
@@ -152,7 +209,8 @@ class App(customtkinter.CTk):
         self.ViewLogsButton.grid(row=3, column=0, padx=20, pady=20)
 
         self.start_monitoring_changes()
-        self.start_face_recognition()
+        self.fr_thread.start()
+
         self.DeleteButton = customtkinter.CTkButton(
             self.EditFrame, text="Delete Item", command=self.delete_item, width=100
         )
@@ -284,167 +342,19 @@ class App(customtkinter.CTk):
                 print(f"Error deleting item: {e}")
         else:
             print("No item selected for deletion.")
-    def start_face_recognition(self):
-        self.face_recognition_thread = threading.Thread(target=self.run_face_recognition, daemon=True)
-        self.face_recognition_thread.start()
 
-    def run_face_recognition(self):
-        # Initialize webcam
-        cap = cv2.VideoCapture(0)
-        try:
-            known_faces = load_known_faces()
-            print("Known faces loaded")
-        except Exception as e:
-            self.face_recognition_error = f"Error loading known faces: {e}"
-            print(self.face_recognition_error)
-            return
-
-        while True:
-            if not cap.isOpened():
-                self.face_recognition_error = "Error: Cannot open webcam"
-                print(self.face_recognition_error)
-                return
-
-            try:
-                matches = capture_and_compare(cap, known_faces)
-                result = check_value_with_timeout(10)
-                if matches is not None:
-                    if result is not None:
-                        intmeds = nfc_read()
-                        db_edit_face(matches, intmeds)
-                        print("Processing completed")
-                    else:
-                        print("No NFC tag scanned")
-                else:
-                    print("No matching face detected")
-                    time.sleep(2)
-            except Exception as e:
-                print(f"Error in face recognition thread: {e}")
-                self.face_recognition_error = f"Error: {e}"
-                break
-        cap.release()
-        cv2.destroyAllWindows()
+    def start_monitoring_changes(self):
         monitor_thread = threading.Thread(target=self.monitor_changes, daemon=True)
         monitor_thread.start()
 
+        self.fr_thread = FacialRecognitionThread(db)
+        self.fr_thread.start()
 
+    # Add cleanup when closing
+    def destroy(self):
+        if self.fr_thread and self.fr_thread.is_alive():
+            self.fr_thread.running.clear()
+        super().destroy()
 
-
-
-
-class NFCReaderThread(threading.Thread):
-    def __init__(self):
-        super().__init__()
-        self.result = None
-        self.error = None
-        self.running = True
-
-    def run(self):
-        try:
-            self.result = nfc_read()
-        except Exception as e:
-            self.error = e
-
-def load_known_faces():
-    known_faces = []
-    try:
-        # Load all reference faces
-        for i in range(0, 6):
-            img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
-            encoding = face_recognition.face_encodings(img)[0]
-            known_faces.append(encoding)
-        return known_faces
-    except FileNotFoundError:
-        print("Error: One or more face images not found in 'pictures' directory")
-        exit(1)
-    except IndexError:
-        print("Error: No face detected in one or more reference images")
-        exit(1)
-
-def capture_and_compare(cap, known_faces):
-    """Capture a frame and compare with known faces"""
-    ret, frame = cap.read()
-    if not ret:
-        print("Error: Cannot read from webcam")
-        return None
-
-    try:
-        # Get encoding of face in current frame
-        current_face_encoding = face_recognition.face_encodings(frame)[0]
-        print("current face encoding")
-        # Compare with known faces
-        results = face_recognition.compare_faces(known_faces, current_face_encoding)
-        # Get indices of matching faces
-        matches = [index for index, value in enumerate(results) if bool(value)]
-        return matches
-
-    except IndexError:
-        print("No face detected in camera frame")
-        return None
-
-def idnumber(tag_data):
-    if "NFCNASAMED" in str(tag_data):
-        print("scanned" + str(tag_data))
-        splitmeds = str(tag_data).split('%')
-        intmeds = int(splitmeds[2])
-        return intmeds
-
-    else:
-        print("med unknown tag")
-
-def nfc_read():
-    tag = clf.connect(rdwr={'on-connect': lambda tag: False})
-    tag_data = tag.ndef.records
-    if tag_data is None:
-        print("no tag data")
-        return
-
-    id_num = idnumber(tag_data)
-    if id_num is not None:
-        collection.update_many({"_id": id_num}, {"$inc": {"Amount": -1}})
-        return id_num
-
-    if id_num is None:
-        print("no id num data")
-        return
-
-
-def check_value_with_timeout(timeout_seconds):
-    print("Waiting for NFC tag with timeout...")
-
-    # Start NFCReaderThread, which runs nfc_read() in the background
-    nfc_thread = NFCReaderThread()
-    nfc_thread.running = True
-    nfc_thread.start()  # Start running the thread
-    nfc_thread.join(timeout_seconds)
-
-    if nfc_thread.is_alive():
-        print("NFC read timeout reached, stopping NFC read...")
-        return None
-
-    if nfc_thread.error:
-        print(f"Error in NFC reader: {nfc_thread.error}")
-        nfc_thread.running = False
-        return None
-
-    print(f"NFC Read Result: {nfc_thread.result}")
-    return nfc_thread.result
-
-def db_edit_face(matches, intmeds):
-
-    idastro = int(matches[0])
-    if idastro and intmeds is not None:
-        collection1.update_many({"_id": idastro}, {"$inc": {f"Amount:{intmeds}": 1}})
-        print(f"face matches with {idastro} :D ")
-        return
-
-    if idastro is None:
-        print("no matching face data")
-        return
-
-def main():
-    app = App()
-    app.mainloop()
-
-if __name__ == "__main__":
-    main()
+app = App()
+app.mainloop()
