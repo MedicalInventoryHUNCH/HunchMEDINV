@@ -28,7 +28,7 @@ def visualize_facial_recognition(input_path, output_path):
     print(f"Processed image saved to {output_path}")
 
 # Specify the paths directly in the code
-input_image_path = "input.jpg"   # Change this to the path of your input image
-output_image_path = "output.jpg" # Change this to your desired output image path
+input_image_path = "/home/hunch/PycharmProjects/HunchPythonNFCREAL/pictures/face3.jpg"   # Change this to the path of your input image
+output_image_path = "/home/hunch/PycharmProjects/HunchPythonNFCREAL/pictures/test.jpg" # Change this to your desired output image path
 
 visualize_facial_recognition(input_image_path, output_image_path)
