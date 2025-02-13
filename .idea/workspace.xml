@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="charlie photo!!!!!">
+    <list default="true" id="818422e4-8d61-4da8-b51b-821b28c83350" name="Changes" comment="doesn't work">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MONGODBEDIT.py" beforeDir="false" afterPath="$PROJECT_DIR$/MONGODBEDIT.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database_logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/database_logs.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/face_rec.py" beforeDir="false" afterPath="$PROJECT_DIR$/face_rec.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pictures/test.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pictures/test.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stuff.py" beforeDir="false" afterPath="$PROJECT_DIR$/stuff.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,7 +217,23 @@
       <option name="project" value="LOCAL" />
       <updated>1739379002122</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="DOMonic MAttroisnai">
+      <option name="closed" value="true" />
+      <created>1739455796439</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1739455796439</updated>
+    </task>
+    <task id="LOCAL-00018" summary="doesn't work">
+      <option name="closed" value="true" />
+      <created>1739462625920</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1739462625920</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -250,6 +260,8 @@
     <MESSAGE value="we're presenting this :(((((" />
     <MESSAGE value="slightly better" />
     <MESSAGE value="charlie photo!!!!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="charlie photo!!!!!" />
+    <MESSAGE value="DOMonic MAttroisnai" />
+    <MESSAGE value="doesn't work" />
+    <option name="LAST_COMMIT_MESSAGE" value="doesn't work" />
   </component>
 </project>
