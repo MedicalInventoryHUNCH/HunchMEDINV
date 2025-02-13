@@ -116,7 +116,7 @@ class App(customtkinter.CTk):
 
         # James' Picture (IMPORTANT PART)
         self.James = customtkinter.CTkImage(
-            dark_image=Image.open("pictures/face7.jpg"),
+            dark_image=Image.open("pictures/face5.jpg"),
             size=(1000, 250)
         )
         self.PicOfJames = customtkinter.CTkLabel(

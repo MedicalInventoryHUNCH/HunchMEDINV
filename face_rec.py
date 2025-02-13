@@ -30,14 +30,14 @@ def load_known_faces():
     known_faces = []
     try:
         # Load all reference faces
-        for i in range(0, 9):
+        for i in range(0, 8):
             img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
             encoding = face_recognition.face_encodings(img)[0]
             known_faces.append(encoding)
         return known_faces
     except FileNotFoundError:
-        print("Error: One or more face images not found in 'pictures' directory")
-        exit(1)
+        print("one or more face images not found in 'pictures' directory")
+        pass
     except IndexError:
         print("Error: No face detected in one or more reference images")
         exit(1)
@@ -123,17 +123,18 @@ def check_value_with_timeout(timeout_seconds):
     return nfc_thread.result
 
 def db_edit_face(matches, intmeds):
-
     idastro = int(matches[0])
-    if intmeds is not None:
-        if idastro is not None:
-            collection1.update_many({"_id": idastro}, {"$inc": {f"Amount_{intmeds}": 1}})
-            print(f"face matches with {idastro} :D ")
-            return
+    if intmeds is not None and idastro is not None:
+        field_name = f"Amount_{intmeds}"
+        collection.update_many({"_id": idastro}, {"$inc": {field_name: +1}})
+        print(f"face matches with {idastro} :D ")
+        return
 
     if idastro is None:
         print("no matching face data")
         return
+    if intmeds is None:
+        print("oh my fucking god this better work or else i'm going to put a fist through my monitor")
 
 def main():
     # Initialize webcam
@@ -158,17 +159,22 @@ def main():
             matches = capture_and_compare(cap, known_faces)
             result = check_value_with_timeout(2)
             print(matches)
-            if matches is not None:
+
+            if matches:
                 try:
                     if result is None:
                         print("no nfc tag scanned")
                         continue
 
                     if result is not None:
-                        intmeds = nfc_read()
-                        db_edit_face(matches, intmeds)
-                        time.sleep(2)
-                        print("ready")
+                        intmeds = result
+                        if intmeds:
+                            db_edit_face(matches, intmeds)
+                            print(intmeds)
+                            time.sleep(2)
+                            print("ready")
+                        else:
+                            print("no nfc tag scanned")
                     else:
                         print("AAAAAAAAAAAAAA")
                         continue

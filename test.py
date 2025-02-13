@@ -7,5 +7,5 @@ ret, frame = cap.read()
 if not ret:
     exit(":(")
 
-cv2.imwrite("pictures/face9.jpg", frame)
+cv2.imwrite("pictures/face7.jpg", frame)
 exit()
