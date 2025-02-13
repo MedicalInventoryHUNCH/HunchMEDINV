@@ -15,7 +15,7 @@ item_names = [doc["Item"] for doc in collection.find()]
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.geometry("1200x1000")
+        self.geometry("1280x1000")
         self.title("Details / Logs")
         self.resizable(True, True)
 
@@ -50,13 +50,27 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
+        self.geometry("1024x600")  # Default size if not maximized
+        self.state("zoomed")  # Start maximized with window decorations
+
+
+        self.grid_columnconfigure(0, weight=1)  # Left column (input fields)
+        self.grid_columnconfigure(1, weight=3)  # Right column (document display)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+
         # Set appearance
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
-        self.title("Medical Inventory")
-        self.geometry("800x700")
+        self.title("Medical Inventory System")
+        self.minsize(800, 600)
+
 
         self.toplevel_window = None
+
+        self.bind("<F11>", lambda event: self.toggle_maximize())
+
 
         # Title Label
         self.TitleLabel = customtkinter.CTkLabel(
@@ -130,14 +144,24 @@ class App(customtkinter.CTk):
 
         # Documents Display Section
         self.DocumentFrame = customtkinter.CTkFrame(self, corner_radius=10)
-        self.DocumentFrame.grid(row=1, column=1, rowspan=3, padx=20, pady=20, sticky="nsew")
+        self.DocumentFrame.grid(row=1, column=1, rowspan=3, padx=20, pady=20,
+                                sticky="nsew", ipadx=10, ipady=10)
 
-        self.DocumentLabel = customtkinter.CTkLabel(self.DocumentFrame, text="Current Inventory", font=("Arial", 18))
-        self.DocumentLabel.pack(pady=10)
+        self.DocumentFrame.grid_columnconfigure(0, weight=1)
+        self.DocumentFrame.grid_rowconfigure(1, weight=1)
 
-        # Textbox without scrollbar and disabled editing
-        self.DocumentTextbox = customtkinter.CTkTextbox(self.DocumentFrame, wrap="none", state="disabled")
-        self.DocumentTextbox.pack(padx=10, pady=10, fill="both", expand=True)
+        self.DocumentLabel = customtkinter.CTkLabel(self.DocumentFrame, text="Current Inventory",
+                                                    font=("Arial", 18))
+        self.DocumentLabel.grid(row=0, column=0, pady=10, sticky="n")
+
+        self.DocumentTextbox = customtkinter.CTkTextbox(
+            self.DocumentFrame,
+            wrap="none",
+            state="disabled",
+            width=600,  # Set explicit width
+            font=("Consolas", 12)  # Monospaced font for better alignment
+        )
+        self.DocumentTextbox.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
 
         # Initial display of documents
         self.refresh_document_display()
@@ -315,6 +339,15 @@ class App(customtkinter.CTk):
                     self.after(5, self.refresh_document_display)
         except Exception as e:
             print(f"Error in change stream: {e}")
+
+    def toggle_maximize(self):
+        """Toggle between maximized and normal window state"""
+        current_state = self.state()
+        if current_state == "normal":
+            self._state_before_maximize = current_state
+            self.state("zoomed")
+        else:
+            self.state("normal")
 
 app = App()
 app.mainloop()
