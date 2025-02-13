@@ -126,7 +126,7 @@ def db_edit_face(matches, intmeds):
     idastro = int(matches[0])
     if intmeds is not None and idastro is not None:
         field_name = f"Amount_{intmeds}"
-        collection.update_many({"_id": idastro}, {"$inc": {field_name: +1}})
+        collection1.update_many({"_id": idastro}, {"$inc": {field_name: +1}})
         print(f"face matches with {idastro} :D ")
         return
 
@@ -134,8 +134,7 @@ def db_edit_face(matches, intmeds):
         print("no matching face data")
         return
     if intmeds is None:
-        print("oh my fucking god this better work or else i'm going to put a fist through my monitor")
-
+        print("eeeeee")
 def main():
     # Initialize webcam
     cap = cv2.VideoCapture(0)
