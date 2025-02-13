@@ -103,9 +103,9 @@ class App(customtkinter.CTk):
         self.EditSelectedName.grid(row=2, column=0, padx=10, pady=5)
 
         self.UpdateButton = customtkinter.CTkButton(
-            self.EditFrame, text="Update", command=self.update_name_amount, width=200
+            self.EditFrame, text="Update", command=self.update_name_amount, width=100
         )
-        self.UpdateButton.grid(row=5, column=1, padx=10, pady=10)
+        self.UpdateButton.grid(row=5, column=0, padx=10, pady=10)
 
         # Change Amount
         self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount", width=200)
@@ -126,7 +126,50 @@ class App(customtkinter.CTk):
         self.DeleteButton = customtkinter.CTkButton(
             self.EditFrame, text="Delete Item", command=self.delete_item, width=100
         )
-        self.DeleteButton.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+        self.DeleteButton.grid(row=5, column=2, columnspan=2, padx=10, pady=10)
+
+        # Documents Display Section
+        self.DocumentFrame = customtkinter.CTkFrame(self, corner_radius=10)
+        self.DocumentFrame.grid(row=1, column=1, rowspan=3, padx=20, pady=20, sticky="nsew")
+
+        self.DocumentLabel = customtkinter.CTkLabel(self.DocumentFrame, text="Current Inventory", font=("Arial", 18))
+        self.DocumentLabel.pack(pady=10)
+
+        # Textbox without scrollbar and disabled editing
+        self.DocumentTextbox = customtkinter.CTkTextbox(self.DocumentFrame, wrap="none", state="disabled")
+        self.DocumentTextbox.pack(padx=10, pady=10, fill="both", expand=True)
+
+        # Initial display of documents
+        self.refresh_document_display()
+
+    def refresh_document_display(self):
+        """Fetches and displays all documents from the database"""
+        try:
+            # Temporarily enable the textbox to update content
+            self.DocumentTextbox.configure(state="normal")
+            self.DocumentTextbox.delete("1.0", "end")
+
+            # Get all documents and format them
+            docs = collection.find().sort("_id", pymongo.ASCENDING)
+            for doc in docs:
+                # Use get() with default values for safety
+                doc_str = f"ID: {doc.get('_id', 'N/A')}\n"
+                doc_str += f"Item: {doc.get('Item', 'Unnamed Item')}\n"
+                doc_str += f"Amount: {doc.get('Amount', 0)}\n"
+
+                # Handle optional expiration date
+                expiry = doc.get('Expiry')
+                if expiry:
+                    doc_str += f"Expiry: {expiry}\n"
+
+                doc_str += "-" * 40 + "\n"
+                self.DocumentTextbox.insert("end", doc_str)
+
+            # Disable the textbox again after update
+            self.DocumentTextbox.configure(state="disabled")
+        except Exception as e:
+            print(f"Error refreshing document display: {e}")
+            self.DocumentTextbox.configure(state="disabled")
 
 
     def write_to_log(self, action, details):
@@ -167,6 +210,8 @@ class App(customtkinter.CTk):
                                         (f", expiry {expiry_date_str}" if expiry_date_str else ""))
                 print(f"Item added successfully with ID {new_id}!")
                 self.refresh_dropdown()
+                self.refresh_document_display()  # Add this line
+
             except Exception as e:
                 print(f"Error adding item: {e}")
         else:
@@ -205,6 +250,7 @@ class App(customtkinter.CTk):
                 if result.modified_count > 0:
                     print(f"Updated '{selected_item}' to {update_fields}")
                     self.refresh_dropdown()
+                    self.refresh_document_display()
                 else:
                     print("No item was updated.")
             except Exception as e:
@@ -247,6 +293,7 @@ class App(customtkinter.CTk):
                     self.write_to_log("Delete", f"Deleted item '{selected_item}'.")
                     print(f"Item '{selected_item}' was successfully deleted!")
                     self.refresh_dropdown()
+                    self.refresh_document_display()
                 else:
                     print(f"Item '{selected_item}' was not found.")
             except Exception as e:
@@ -258,6 +305,16 @@ class App(customtkinter.CTk):
     def start_monitoring_changes(self):
         monitor_thread = threading.Thread(target=self.monitor_changes, daemon=True)
         monitor_thread.start()
+
+    def monitor_changes(self):
+        change_pipeline = [{"$match": {"operationType": {"$in": ["insert", "update", "delete"]}}}]
+        try:
+            with collection.watch(pipeline=change_pipeline) as stream:
+                for change in stream:
+                    # Schedule GUI update in main thread
+                    self.after(5, self.refresh_document_display)
+        except Exception as e:
+            print(f"Error in change stream: {e}")
 
 app = App()
 app.mainloop()

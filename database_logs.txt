@@ -102,3 +102,6 @@
 [02/13/2025 12:52:46] Update: Updated item 'Tylenol' to Doses: 11.
 [02/13/2025 12:52:54] Update: Updated item 'Tylenol' to Doses: 12.
 [02/13/2025 12:53:04] Update: Updated item 'Tylenol' to Doses: 12.
+[2025-02-13] Add: Added item 'yy' with ID 6, amount 21, expiry 1222-12-12
+[2025-02-13] Add: Added item 'yy' with ID 7, amount 21, expiry 1222-12-12
+[2025-02-13] Add: Added item 'test' with ID 8, amount 5, expiry 1212-12-12

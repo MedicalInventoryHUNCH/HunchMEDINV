@@ -71,14 +71,15 @@ class App(customtkinter.CTk):
         self.AddItemLabel = customtkinter.CTkLabel(self.AddItemFrame, text="Add New Item", font=("Arial", 18))
         self.AddItemLabel.grid(row=0, column=0, columnspan=2, pady=10)
 
-        self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name")
+        self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name", width=300)
         self.AddNameBox.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount")
+        # Updated placeholder to "Enter Doses"
+        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Doses", width=300)
         self.AddAmountBox.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
         # Expiration Date Entry Box
-        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="DD/MM/YYYY")
+        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: MM/DD/YYYY", width=300)
         self.AddExpiry.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
 
         self.AddButton = customtkinter.CTkButton(
@@ -99,30 +100,22 @@ class App(customtkinter.CTk):
         self.CurrentDocumentsDropdown.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
         # Change Name
-        self.EditSelectedName = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name")
+        self.EditSelectedName = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Name", width=200)
         self.EditSelectedName.grid(row=2, column=0, padx=10, pady=5)
 
-        self.ChangeNameAmountButton = customtkinter.CTkButton(
-            self.EditFrame, text="Update", command=self.update_name_amount, width=200
-        )
-        self.ChangeNameAmountButton.grid(row=3, column=1, padx=10, pady=10)
-
-        # Change Amount
-        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount")
+        # Updated placeholder to "Enter New Doses"
+        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Doses", width=200)
         self.EditSelectedAmount.grid(row=3, column=0, padx=10, pady=5)
 
+        self.EditSelectedExpiry = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Expiration Date", width=200)
+        self.EditSelectedExpiry.grid(row=4, column=0, padx=10, pady=5)
+
+        self.UpdateButton = customtkinter.CTkButton(
+            self.EditFrame, text="Update", command=self.update_name_amount, width=200
+        )
+        self.UpdateButton.grid(row=5, column=1, padx=10, pady=10)
+
         # James' Picture (IMPORTANT PART)
-        self.James = customtkinter.CTkImage(
-            dark_image=Image.open("pictures/face5.jpg"),
-            size=(1000, 250)
-        )
-        self.PicOfJames = customtkinter.CTkLabel(
-            self,
-            image=self.James,
-            text="",
-            corner_radius=20
-        )
-        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10, rowspan=2)
 
         self.ViewLogsButton = customtkinter.CTkButton(
             self, text="Logs Placeholder", command=self.view_logs, width=200
@@ -134,29 +127,29 @@ class App(customtkinter.CTk):
         self.DeleteButton = customtkinter.CTkButton(
             self.EditFrame, text="Delete Item", command=self.delete_item, width=100
         )
-        self.DeleteButton.grid(row=4, column=0, columnspan=2, padx=10, pady=10)
+        self.DeleteButton.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
 
     def write_to_log(self, action, details):
         log_filename = "database_logs.txt"
         with open(log_filename, "a") as log_file:
             # Log date only (YYYY-MM-DD)
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
+            timestamp = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")
             log_file.write(f"[{timestamp}] {action}: {details}\n")
 
     def addstuff(self):
         name = self.AddNameBox.get().strip()
-        amount = self.AddAmountBox.get().strip()
+        doses = self.AddAmountBox.get().strip()
         expiry_str = self.AddExpiry.get().strip()
 
-        if name and amount:
+        if name and doses:
             expiry_date_str = None
             if expiry_str:
                 try:
                     # Parse the input date and reformat it as a string
-                    expiry_date = datetime.datetime.strptime(expiry_str, "%d/%m/%Y")
-                    expiry_date_str = expiry_date.strftime("%Y-%m-%d")
+                    expiry_date = datetime.datetime.strptime(expiry_str, "%m/%d/%Y")
+                    expiry_date_str = expiry_date.strftime("%m/%d/%Y")
                 except ValueError:
-                    print("Invalid expiry date format. Please use DD/MM/YYYY.")
+                    print("Invalid expiry date format. Please use MM/DD/YYYY.")
                     return
 
             try:
@@ -165,34 +158,43 @@ class App(customtkinter.CTk):
                 new_id = 1 if last_doc is None else last_doc['_id'] + 1
 
                 # Build the document; store the expiry as a formatted string if provided
-                doc1 = {"_id": new_id, "Item": name, "Amount": int(amount)}
+                doc1 = {"_id": new_id, "Item": name, "Doses": int(doses)}
                 if expiry_date_str:
                     doc1["Expiry"] = expiry_date_str
 
                 collection.insert_one(doc1)
-                self.write_to_log("Add", f"Added item '{name}' with ID {new_id}, amount {amount}" +
+                self.write_to_log("Add", f"Added item '{name}' with ID {new_id}, doses {doses}" +
                                         (f", expiry {expiry_date_str}" if expiry_date_str else ""))
                 print(f"Item added successfully with ID {new_id}!")
                 self.refresh_dropdown()
             except Exception as e:
                 print(f"Error adding item: {e}")
         else:
-            print("Please fill in both name and amount fields.")
+            print("Please fill in both name and doses fields.")
 
     def update_name_amount(self):
         original_name = self.CurrentDocumentsDropdown.get()
         selected_item = self.CurrentDocumentsDropdown.get()
         new_name = self.EditSelectedName.get().strip()
-        new_amount = self.EditSelectedAmount.get().strip()
+        new_doses = self.EditSelectedAmount.get().strip()
+        new_expiry = self.EditSelectedExpiry.get().strip()
 
         update_fields = {}
         if new_name:
             update_fields["Item"] = new_name
-        if new_amount:
+        if new_doses:
             try:
-                update_fields["Amount"] = int(new_amount)
+                update_fields["Doses"] = int(new_doses)
             except ValueError:
-                print("Amount must be an integer.")
+                print("Doses must be an integer.")
+                return
+        if new_expiry:
+            try:
+                expiry_date = datetime.datetime.strptime(new_expiry, "%m/%d/%Y")
+                expiry_date_str = expiry_date.strftime("%m/%d/%Y")
+                update_fields["Expiry"] = expiry_date_str
+            except ValueError:
+                print("Invalid expiry date format. Please use MM/DD/YYYY.")
                 return
 
         if selected_item and update_fields:
@@ -229,10 +231,10 @@ class App(customtkinter.CTk):
                 for change in stream:
                     updated_id = change["documentKey"].get("_id")
                     updated_fields = change["updateDescription"]["updatedFields"]
-                    new_amount = updated_fields.get("Amount")
+                    new_doses = updated_fields.get("Doses")
                     new_name = change["fullDocument"].get("Item")
-                    previous_amount = change["fullDocument"].get("Amount", new_amount)
-                    print(f"ID: {updated_id}, Name: {new_name}, Previous Amount: {previous_amount}, New Amount: {new_amount}")
+                    previous_doses = change["fullDocument"].get("Doses", new_doses)
+                    print(f"ID: {updated_id}, Name: {new_name}, Previous Doses: {previous_doses}, New Doses: {new_doses}")
         except Exception as e:
             print(f"Error in change stream: {e}")
 
