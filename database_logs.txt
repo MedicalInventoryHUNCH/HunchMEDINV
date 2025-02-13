@@ -76,3 +76,6 @@
 [2025-02-12] Add: Added item 'Tylenol' with ID 2, amount 12, expiry 2025-02-13
 [2025-02-12] Add: Added item 'Ibuprofen' with ID 2, amount 86, expiry 2024-12-24
 [2025-02-12] Add: Added item 'Ibuprofen' with ID 3, amount 86, expiry 2024-12-24
+[2025-02-12] System: Started face recognition system
+[2025-02-12] System: Started face recognition system
+[2025-02-12] System: Started face recognition system

@@ -1,5 +1,4 @@
 import threading
-
 import face_recognition
 import cv2
 import time
@@ -7,7 +6,8 @@ import nfc
 from pymongo import MongoClient
 import ndef
 
-
+recently_scanned_tags = {}
+Tag_dedup = 2
 cluster = MongoClient("mongodb+srv://bernardorhyshunch:TakingInventoryIsFun@cluster0.jpb6w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = cluster["Inventory"]
 collection1 = db["astro"]
@@ -30,7 +30,7 @@ def load_known_faces():
     known_faces = []
     try:
         # Load all reference faces
-        for i in range(0, 6):
+        for i in range(0, 9):
             img = face_recognition.load_image_file(f"pictures/face{i}.jpg")
             encoding = face_recognition.face_encodings(img)[0]
             known_faces.append(encoding)
@@ -82,6 +82,19 @@ def nfc_read():
 
     id_num = idnumber(tag_data)
     if id_num is not None:
+        current_time = time.time()
+
+        # Check if the tag was recently scanned
+        if id_num in recently_scanned_tags:
+            last_scanned_time = recently_scanned_tags[id_num]
+            if current_time - last_scanned_time < Tag_dedup:
+                print(f"Tag {id_num} was already scanned recently. Ignoring duplicate...")
+                return None
+
+        # Update the cache with the current scan time
+        recently_scanned_tags[id_num] = current_time
+
+        # Perform the database update
         collection.update_many({"_id": id_num}, {"$inc": {"Amount": -1}})
         return id_num
 
@@ -112,10 +125,11 @@ def check_value_with_timeout(timeout_seconds):
 def db_edit_face(matches, intmeds):
 
     idastro = int(matches[0])
-    if idastro and intmeds is not None:
-        collection1.update_many({"_id": idastro}, {"$inc": {f"Amount:{intmeds}": 1}})
-        print(f"face matches with {idastro} :D ")
-        return
+    if intmeds is not None:
+        if idastro is not None:
+            collection1.update_many({"_id": idastro}, {"$inc": {f"Amount_{intmeds}": 1}})
+            print(f"face matches with {idastro} :D ")
+            return
 
     if idastro is None:
         print("no matching face data")
@@ -142,7 +156,7 @@ def main():
             # Load known faces
             # Capture and process one frame
             matches = capture_and_compare(cap, known_faces)
-            result = check_value_with_timeout(10)
+            result = check_value_with_timeout(2)
             print(matches)
             if matches is not None:
                 try:
@@ -153,6 +167,7 @@ def main():
                     if result is not None:
                         intmeds = nfc_read()
                         db_edit_face(matches, intmeds)
+                        time.sleep(2)
                         print("ready")
                     else:
                         print("AAAAAAAAAAAAAA")

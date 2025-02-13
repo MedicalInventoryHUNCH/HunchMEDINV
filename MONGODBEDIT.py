@@ -23,7 +23,7 @@ while True:
 
 
         doc1 = {"_id":int(id1), "Item":name,
-                "Amount:1":int(amount), "Amount:2":int(amount2), "Amount:3":int(amount3), "Amount:4":int(amount4),"Amount:5":int(amount5),"Amount:6":int(amount6),
+                "Amount_1":int(amount), "Amount_2":int(amount2), "Amount_3":int(amount3), "Amount_4":int(amount4),"Amount_5":int(amount5),"Amount_6":int(amount6),
                 } #use this to put new docs into DB
         collection.insert_one(doc1)
         break
