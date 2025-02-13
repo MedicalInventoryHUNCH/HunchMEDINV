@@ -77,5 +77,28 @@
 [2025-02-12] Add: Added item 'Ibuprofen' with ID 2, amount 86, expiry 2024-12-24
 [2025-02-12] Add: Added item 'Ibuprofen' with ID 3, amount 86, expiry 2024-12-24
 [2025-02-12] System: Started face recognition system
+[2025-02-13] Add: Added item 'ibuprofen' with ID 3, amount 5, expiry 2025-12-12
+[2025-02-13] Update: Updated item 'ibuprofen' to Item: whatever, Amount: 99.
+[2025-02-13] Delete: Deleted item 'whatever'.
+[2025-02-13] Add: Added item 'twst' with ID 3, amount 1, expiry 1212-12-12
+[2025-02-13] Update: Updated item 'twst' to Expiry: 1212-12-12.
 [2025-02-12] System: Started face recognition system
 [2025-02-12] System: Started face recognition system
+[2025-02-12] System: Started face recognition system
+[2025-02-13] Add: Added item 'retardo' with ID 4, amount 1, expiry 1000-01-09
+[2025-02-13] Update: Updated item 'retardo' to Item: retardo1, Amount: 5, Expiry: 2000-03-01.
+[2025-02-13] Update: Updated item 'retardo' to Item: retardo1, Amount: 5, Expiry: 2000-03-01.
+[2025-02-13] Update: Updated item 'retardo' to Item: retardo1, Amount: 5, Expiry: 2000-03-01.
+[2025-02-13] Update: Updated item 'retardo' to Item: retardo1, Amount: 5, Expiry: 2000-03-01.
+[2025-02-13] Update: Updated item 'retardo' to Item: retardo1, Amount: 5, Expiry: 2000-03-01.
+[2025-13-02] Add: Added item 'Ibuprofen' with ID 2, doses 12, expiry 2025-08-10
+[02/13/2025] Add: Added item 'Tylenol' with ID 1, doses 7, expiry 02/11/2025
+[02/13/2025] Add: Added item 'Ibuprofen' with ID 2, doses 15, expiry 10/08/2025
+[02/13/2025] Add: Added item 'Insulin' with ID 3, doses 23, expiry 09/02/2025
+[02/13/2025] Add: Added item 'Melatonin' with ID 4, doses 23, expiry 11/08/2025
+[02/13/2025] Add: Added item 'Mineral Oil and White Petrolatom' with ID 5, doses 83, expiry 05/23/2027
+[02/13/2025 12:50] Update: Updated item 'Mineral Oil and White Petrolatom' to Doses: 13.
+[02/13/2025 12:51:14] Update: Updated item 'Tylenol' to Doses: 11.
+[02/13/2025 12:52:46] Update: Updated item 'Tylenol' to Doses: 11.
+[02/13/2025 12:52:54] Update: Updated item 'Tylenol' to Doses: 12.
+[02/13/2025 12:53:04] Update: Updated item 'Tylenol' to Doses: 12.

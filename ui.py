@@ -114,21 +114,10 @@ class App(customtkinter.CTk):
         self.EditSelectedExpiry = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Expiration Date", width=200)
         self.EditSelectedExpiry.grid(row=4, column=0, padx=10, pady=5)
 
-        # James' Picture (IMPORTANT PART)
-        self.James = customtkinter.CTkImage(
-            dark_image=Image.open("pictures/face5.jpg"),
-            size=(1000, 250)
-        )
-        self.PicOfJames = customtkinter.CTkLabel(
-            self,
-            image=self.James,
-            text="",
-            corner_radius=20
-        )
-        self.PicOfJames.grid(row=1, column=2, padx=10, pady=10, rowspan=2)
+        # James' Picture (gone but not forgotten)
 
         self.ViewLogsButton = customtkinter.CTkButton(
-            self, text="Logs Placeholder", command=self.view_logs, width=200
+            self, text="Logs", command=self.view_logs, width=200
         )
         self.ViewLogsButton.grid(row=3, column=0, padx=20, pady=20)
 
@@ -244,7 +233,7 @@ class App(customtkinter.CTk):
                     updated_fields = change["updateDescription"]["updatedFields"]
                     new_amount = updated_fields.get("Amount")
                     new_name = change["fullDocument"].get("Item")
-                    previous_amount = change["fullDocument"].get("Amount", new_amount)
+                    previous_amount = change["fullDocument"].get("Doses", new_amount)
                     print(f"ID: {updated_id}, Name: {new_name}, Previous Amount: {previous_amount}, New Amount: {new_amount}")
         except Exception as e:
             print(f"Error in change stream: {e}")
