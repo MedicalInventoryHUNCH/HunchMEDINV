@@ -12,18 +12,38 @@ db = cluster["Inventory"]
 collection = db["Inventory"]
 item_names = [doc["Item"] for doc in collection.find()]
 
+
 class ToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.geometry("1280x1000")
+        self.geometry("1280x720")
         self.title("Details / Logs")
         self.resizable(True, True)
 
-        # Add a Scrollable Textbox
-        self.textbox = customtkinter.CTkTextbox(self)
+        # Modern styling
+        customtkinter.set_appearance_mode("dark")
+        self.configure(fg_color=("#DBDBDB", "#2B2B2B"))
+
+        # Textbox styling
+        self.textbox = customtkinter.CTkTextbox(
+            self,
+            font=("Segoe UI", 12),
+            wrap="word",
+            fg_color=("#FFFFFF", "#1E1E1E"),
+            border_width=1,
+            border_color=("#AAAAAA", "#444444")
+        )
         self.textbox.pack(padx=20, pady=20, fill="both", expand=True)
 
-        # Display logs from file
+        # Scrollbar setup in __init__ to ensure only one exists
+        self.scrollbar = customtkinter.CTkScrollbar(
+            self,
+            command=self.textbox.yview,
+            button_color=("#3B8ED0", "#1F6AA5")
+        )
+        self.scrollbar.pack(side="right", fill="y")
+        self.textbox.configure(yscrollcommand=self.scrollbar.set)
+
         self.display_logs()
 
     def display_logs(self):
@@ -34,11 +54,6 @@ class ToplevelWindow(customtkinter.CTkToplevel):
                 self.textbox.insert("0.0", logs)
         else:
             self.textbox.insert("0.0", "No logs available.\n")
-        # Enable scrolling
-        self.scrollbar = customtkinter.CTkScrollbar(self, command=self.textbox.yview)
-        self.textbox.configure(yscrollcommand=self.scrollbar.set)
-        # Place the scrollbar to the right of the textbox
-        self.scrollbar.pack(side="right", fill="y")
         self.grab_set()
         self.focus_force()
         self.after(200, self.release_grab)
@@ -88,11 +103,15 @@ class App(customtkinter.CTk):
         self.AddNameBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Item Name", width=300)
         self.AddNameBox.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
-        self.AddAmountBox = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Amount", width=300)
+        self.AddAmountBox = customtkinter.CTkEntry(
+            self.AddItemFrame,
+            placeholder_text="Enter Doses",  # Changed
+            width=300
+        )
         self.AddAmountBox.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
         # Expiration Date Entry Box
-        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: DD/MM/YYYY", width=300)
+        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: MM/DD/YYYY", width=300)
         self.AddExpiry.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
 
         self.AddButton = customtkinter.CTkButton(
@@ -122,9 +141,12 @@ class App(customtkinter.CTk):
         self.UpdateButton.grid(row=5, column=0, padx=10, pady=10)
 
         # Change Amount
-        self.EditSelectedAmount = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Amount", width=200)
+        self.EditSelectedAmount = customtkinter.CTkEntry(
+            self.EditFrame,
+            placeholder_text="Enter New Doses",  # Changed
+            width=200
+        )
         self.EditSelectedAmount.grid(row=3, column=0, padx=10, pady=5)
-
         self.EditSelectedExpiry = customtkinter.CTkEntry(self.EditFrame, placeholder_text="Enter New Expiration Date", width=200)
         self.EditSelectedExpiry.grid(row=4, column=0, padx=10, pady=5)
 
@@ -138,30 +160,52 @@ class App(customtkinter.CTk):
         self.start_monitoring_changes()
 
         self.DeleteButton = customtkinter.CTkButton(
-            self.EditFrame, text="Delete Item", command=self.delete_item, width=100
+            self.EditFrame, text="Delete Item", command=self.delete_item, width=100,fg_color=("#E55353", "#CC4A4A"),hover_color=("#CC4A4A", "#B34141")
+
+
         )
         self.DeleteButton.grid(row=5, column=2, columnspan=2, padx=10, pady=10)
 
-        # Documents Display Section
+        # Documents Display Section (modified to include search)
         self.DocumentFrame = customtkinter.CTkFrame(self, corner_radius=10)
-        self.DocumentFrame.grid(row=1, column=1, rowspan=3, padx=20, pady=20,
-                                sticky="nsew", ipadx=10, ipady=10)
-
+        self.DocumentFrame.grid(row=1, column=1, rowspan=3, padx=20, pady=20, sticky="nsew")
         self.DocumentFrame.grid_columnconfigure(0, weight=1)
-        self.DocumentFrame.grid_rowconfigure(1, weight=1)
+        self.DocumentFrame.grid_rowconfigure(2, weight=1)  # Textbox row
 
-        self.DocumentLabel = customtkinter.CTkLabel(self.DocumentFrame, text="Current Inventory",
-                                                    font=("Arial", 18))
-        self.DocumentLabel.grid(row=0, column=0, pady=10, sticky="n")
+        # Search Frame
+        self.SearchFrame = customtkinter.CTkFrame(self.DocumentFrame, fg_color="transparent")
+        self.SearchFrame.grid(row=0, column=0, padx=10, pady=5, sticky="ew")
 
+        self.SearchEntry = customtkinter.CTkEntry(
+            self.SearchFrame,
+            placeholder_text="Search items...",
+            width=200
+        )
+        self.SearchEntry.grid(row=0, column=0, padx=(0, 10), pady=5)
+        self.SearchEntry.bind("<Return>", lambda event: self.perform_search())
+
+        self.SearchButton = customtkinter.CTkButton(
+            self.SearchFrame,
+            text="Search",
+            command=self.perform_search,
+            width=80
+        )
+        self.SearchButton.grid(row=0, column=1, padx=0, pady=5)
+
+        # Document Label
+        self.DocumentLabel = customtkinter.CTkLabel(self.DocumentFrame, text="Current Inventory", font=("Arial", 18))
+        self.DocumentLabel.grid(row=1, column=0, pady=10, sticky="n")
+
+        # Document Textbox
         self.DocumentTextbox = customtkinter.CTkTextbox(
             self.DocumentFrame,
             wrap="none",
             state="disabled",
-            width=600,  # Set explicit width
-            font=("Consolas", 12)  # Monospaced font for better alignment
+            font=("Consolas", 12)
         )
-        self.DocumentTextbox.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.DocumentTextbox.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        # Original color was #FFFACD - changed to less intense #FFF3A0
+        self.DocumentTextbox.tag_config("highlight", background="#FE9000")  # Changed from #FE9000 #F7F7FF
 
         # Initial display of documents
         self.refresh_document_display()
@@ -225,13 +269,13 @@ class App(customtkinter.CTk):
                 new_id = 1 if last_doc is None else last_doc['_id'] + 1
 
                 # Build the document; store the expiry as a formatted string if provided
-                doc1 = {"_id": new_id, "Item": name, "Amount": int(amount)}
+                doc1 = {"_id": new_id, "Item": name, "Doses": int(amount)}  # Changed
                 if expiry_date_str:
                     doc1["Expiry"] = expiry_date_str
 
                 collection.insert_one(doc1)
-                self.write_to_log("Add", f"Added item '{name}' with ID {new_id}, amount {amount}" +
-                                        (f", expiry {expiry_date_str}" if expiry_date_str else ""))
+                self.write_to_log("Add", f"Added item '{name}' with ID {new_id}, doses {amount}")  # Changed
+                (f", expiry {expiry_date_str}" if expiry_date_str else "")
                 print(f"Item added successfully with ID {new_id}!")
                 self.refresh_dropdown()
                 self.refresh_document_display()  # Add this line
@@ -253,7 +297,7 @@ class App(customtkinter.CTk):
             update_fields["Item"] = new_name
         if new_amount:
             try:
-                update_fields["Amount"] = int(new_amount)
+                update_fields["Doses"] = int(new_amount)  # Changed
             except ValueError:
                 print("Amount must be an integer.")
                 return
@@ -301,9 +345,9 @@ class App(customtkinter.CTk):
                 for change in stream:
                     updated_id = change["documentKey"].get("_id")
                     updated_fields = change["updateDescription"]["updatedFields"]
-                    new_amount = updated_fields.get("Amount")
+                    new_amount = updated_fields.get("Doses")  # Changed
                     new_name = change["fullDocument"].get("Item")
-                    previous_amount = change["fullDocument"].get("Doses", new_amount)
+                    previous_amount = change["fullDocument"].get("Doses", new_amount)  # Changed
                     print(f"ID: {updated_id}, Name: {new_name}, Previous Amount: {previous_amount}, New Amount: {new_amount}")
         except Exception as e:
             print(f"Error in change stream: {e}")
@@ -340,14 +384,64 @@ class App(customtkinter.CTk):
         except Exception as e:
             print(f"Error in change stream: {e}")
 
-    def toggle_maximize(self):
-        """Toggle between maximized and normal window state"""
-        current_state = self.state()
-        if current_state == "normal":
-            self._state_before_maximize = current_state
-            self.state("zoomed")
-        else:
-            self.state("normal")
+
+
+    def perform_search(self):
+        """Highlight documents containing the search query"""
+        query = self.SearchEntry.get().strip().lower()
+        self.DocumentTextbox.configure(state="normal")
+        self.DocumentTextbox.tag_remove("highlight", "1.0", "end")
+
+        if query:
+            start_idx = "1.0"
+            while True:
+                # Find next occurrence of the separator line
+                sep_start = self.DocumentTextbox.search("-" * 40, start_idx, stopindex="end")
+                if not sep_start:
+                    # Check remaining text after last separator
+                    block_text = self.DocumentTextbox.get(start_idx, "end-1c")
+                    if any(query in line.lower() for line in block_text.split("\n")):
+                        self.DocumentTextbox.tag_add("highlight", start_idx, "end-1c")
+                    break
+
+                # Get end of separator line
+                sep_end = self.DocumentTextbox.index(f"{sep_start} lineend")
+                # Check block from start_idx to sep_end (includes separator)
+                block_text = self.DocumentTextbox.get(start_idx, sep_end)
+                if any(query in line.lower() for line in block_text.split("\n")):
+                    self.DocumentTextbox.tag_add("highlight", start_idx, sep_end)
+
+                # Move to next block
+                start_idx = self.DocumentTextbox.index(f"{sep_end} + 1 char")
+
+        self.DocumentTextbox.configure(state="disabled")
+
+    def refresh_document_display(self):
+        """Fetches and displays all documents (with search reset)"""
+        try:
+            self.DocumentTextbox.configure(state="normal")
+            self.DocumentTextbox.delete("1.0", "end")
+
+            # Get documents from database
+            docs = collection.find().sort("_id", pymongo.ASCENDING)
+            for doc in docs:
+                doc_str = f"ID: {doc.get('_id', 'N/A')}\n"
+                doc_str += f"Item: {doc.get('Item', 'Unnamed Item')}\n"
+                doc_str += f"Doses: {doc.get('Doses', 0)}\n"  # Changed
+                if "Expiry" in doc:
+                    doc_str += f"Expiry: {doc['Expiry']}\n"
+                doc_str += "-" * 40 + "\n"
+                self.DocumentTextbox.insert("end", doc_str)
+
+            # Reset search
+            self.SearchEntry.delete(0, "end")
+            self.DocumentTextbox.tag_remove("highlight", "1.0", "end")
+
+        except Exception as e:
+            print(f"Error refreshing documents: {e}")
+        finally:
+            self.DocumentTextbox.configure(state="disabled")
+
 
 app = App()
 app.mainloop()

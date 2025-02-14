@@ -105,3 +105,14 @@
 [2025-02-13] Add: Added item 'yy' with ID 6, amount 21, expiry 1222-12-12
 [2025-02-13] Add: Added item 'yy' with ID 7, amount 21, expiry 1222-12-12
 [2025-02-13] Add: Added item 'test' with ID 8, amount 5, expiry 1212-12-12
+[2025-02-14] Add: Added item 'poop' with ID 11, doses 23
+[2025-02-14] Add: Added item 'Test1' with ID 6, doses 1
+[2025-02-14] Add: Added item 'Test2' with ID 7, doses 1
+[2025-02-14] Add: Added item 'Test3' with ID 8, doses 1
+[2025-02-14] Add: Added item 'Test4' with ID 9, doses 1
+[2025-02-14] Delete: Deleted item 'Test1'.
+[2025-02-14] Delete: Deleted item 'Test2'.
+[2025-02-14] Delete: Deleted item 'Test3'.
+[2025-02-14] Delete: Deleted item 'Test4'.
+[2025-02-14] Add: Added item 'Promethazine' with ID 6, doses 14
+[2025-02-14] Add: Added item 'Caffeine' with ID 7, doses 109
