@@ -110,7 +110,7 @@ class App(customtkinter.CTk):
         self.AddAmountBox.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
         # Expiration Date Entry Box
-        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: MM/DD/YYYY", width=300)
+        self.AddExpiry = customtkinter.CTkEntry(self.AddItemFrame, placeholder_text="Enter Expiration Date: MM/DD/YY", width=300)
         self.AddExpiry.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
 
         self.AddButton = customtkinter.CTkButton(
@@ -242,8 +242,7 @@ class App(customtkinter.CTk):
     def write_to_log(self, action, details):
         log_filename = "database_logs.txt"
         with open(log_filename, "a") as log_file:
-            # Log date only (YYYY-MM-DD)
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
+            timestamp = datetime.datetime.now().strftime("%m/%d/%y")
             log_file.write(f"[{timestamp}] {action}: {details}\n")
 
     def addstuff(self):
@@ -256,10 +255,10 @@ class App(customtkinter.CTk):
             if expiry_str:
                 try:
                     # Parse the input date and reformat it as a string
-                    expiry_date = datetime.datetime.strptime(expiry_str, "%d/%m/%Y")
-                    expiry_date_str = expiry_date.strftime("%Y-%m-%d")
+                    expiry_date = datetime.datetime.strptime(expiry_str, "%m/%d/%y")
+                    expiry_date_str = expiry_date.strftime("%m/%d/%y")
                 except ValueError:
-                    print("Invalid expiry date format. Please use DD/MM/YYYY.")
+                    print("Invalid expiry date format. Please use MM/DD/YY.")
                     return
 
             try:
@@ -302,11 +301,11 @@ class App(customtkinter.CTk):
                 return
         if new_expiry:
             try:
-                expiry_date = datetime.datetime.strptime(new_expiry, "%d/%m/%Y")
-                expiry_date_str = expiry_date.strftime("%Y-%m-%d")
+                expiry_date = datetime.datetime.strptime(new_expiry, "%m/%d/%y")
+                expiry_date_str = expiry_date.strftime("%m/%d/%y")
                 update_fields["Expiry"] = expiry_date_str
             except ValueError:
-                print("Invalid expiry date format. Please use DD/MM/YYYY.")
+                print("Invalid expiry date format. Please use MM/DD/YY.")
                 return
 
         if selected_item and update_fields:

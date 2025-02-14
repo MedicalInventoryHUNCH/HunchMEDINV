@@ -116,3 +116,8 @@
 [2025-02-14] Delete: Deleted item 'Test4'.
 [2025-02-14] Add: Added item 'Promethazine' with ID 6, doses 14
 [2025-02-14] Add: Added item 'Caffeine' with ID 7, doses 109
+[02/14/25] Update: Updated item 'Caffeine' to Item: aaaaa, Doses: 2.
+[02/14/25] Update: Updated item 'Caffeine' to Item: aaaaa, Doses: 2.
+[02/14/25] Update: Updated item 'Caffeine' to Item: Caffeine, Doses: 26.
+[02/14/25] Update: Updated item 'aaaaa' to Item: Caffeine, Doses: 26.
+[02/14/25] Update: Updated item 'Caffeine' to Expiry: 12/25/29.
