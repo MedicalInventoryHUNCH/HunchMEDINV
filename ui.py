@@ -66,7 +66,6 @@ class App(customtkinter.CTk):
         super().__init__()
 
         self.geometry("1024x600")  # Default size if not maximized
-        self.state("zoomed")  # Start maximized with window decorations
 
 
         self.grid_columnconfigure(0, weight=1)  # Left column (input fields)
